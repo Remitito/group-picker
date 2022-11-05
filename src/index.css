@@ -4,3 +4,8 @@ html {
   display: table;
   margin: auto;
 }
+
+body {
+  background-color: #fef9f8;
+  color: #0d0d0d;
+}

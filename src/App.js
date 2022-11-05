@@ -1,5 +1,5 @@
 import {Main, Info, TextBox, Button, Column, Name, OptionTitle, NumGroups, GroupName,
-  Row, Student, Gender, GenderCont, OptionLabel, Change, Member, StudentCont, Option, OptionRow, Group, ByGender} from './styles'
+  Row, Student, Gender, GenderCont, OptionLabel, Important, Change, Member, StudentCont, Option, OptionRow, Group, ByGender} from './styles'
 import { IoManSharp, IoWomanSharp} from "react-icons/io5"; 
 import { IconStyleMan, IconStyleWoman } from './styles';
 import React, {useEffect, useState} from "react";
@@ -11,11 +11,12 @@ class App extends React.Component {
       students: "",
       nameArray: ["Jack", "Jane", "Sarah", "Frank", "Keith", "Rachel", "Melvin"],
       studentInfo: [["Jack", "m"], ["Jane", "f"], ["Sarah", "f"], ["Frank", "m"], ["Keith", "m"], ["Rachel", "f"], ["Melvin", "m"]],
-      step: 2,
+      step: 1,
       groups: [["Jack", "Jane", "Sarah", "Frank"], ["Keith", "Rachel", "Melvin"]],
       byGender: "no",
-      numGroups: 2,
+      numGroups: 21,
       student1: ["", 0],
+      error: ""
     }
   }
   
@@ -24,14 +25,16 @@ class App extends React.Component {
     let value = e.target.value
     this.setState({[name]: value})
   }
-  
+
   addStudents = () => {
-    const studentNames = this.state.students.split(/\r?\n/)
+    let studentNames = this.state.students.split(/\r?\n/)
       if(studentNames.length < 4) {
-        return // not enough names
+        this.setState({error: "Please enter at least 4 names"})
+        return
       }
       if(studentNames.length !== new Set(studentNames).size) {
-        return // no duplicates
+        this.setState({error: "Please ensure all names are different"})
+        return
       }
       else {
         const output = []
@@ -168,47 +171,55 @@ class App extends React.Component {
   render() {
   
   return (
-    <Main>
-      <h1>Group Picker</h1>
-      {this.state.step === 1 ?
-      <>
-        <Info>Copy and paste the names below (each name on a new line) to get started!</Info>
-        <TextBox name="students" value={this.state.students} onChange={this.handleChange}/>
-        <Button onClick={this.addStudents}>Add Students</Button>
-      </>
-      :
-      <>
-      {this.state.step == 2 ?
-      <>
-          <Row>
-            <Column>{this.mapStudents()}</Column>
-            <Column>
-            <Option>
-              <OptionTitle>Select by gender:</OptionTitle>
-              <OptionRow>
-                <OptionLabel>Yes</OptionLabel>
-                <ByGender name="byGender" checked={this.state.byGender == "yes"} value={"yes"} onChange={this.handleChange} type="radio"/>
-                <OptionLabel>No</OptionLabel>
-                <ByGender name="byGender" checked={this.state.byGender == "no"} value={"no"} onChange={this.handleChange} type="radio"/>
-              </OptionRow>
-            </Option>
-            <Option>
-              <OptionTitle>Number of groups:</OptionTitle>
-                <OptionRow>
-                  <NumGroups name="numGroups" value={this.state.numGroups} onChange={this.handleChange} type="text"></NumGroups>
-                </OptionRow>
-            </Option>
-            </Column>
-          </Row>
-          <Button onClick={this.state.byGender === "yes" ? this.makeGroupsByGender : this.makeGroups}>Make Groups</Button>
-          </>
-        : 
+    <>
+    {this.state.error.length === 0 ?
+      <Main>
+        <h1>Group Picker</h1>
+        {this.state.step === 1 ?
         <>
-        {this.mapGroups()}
-        </>}
-      </>
-      }
-    </Main>
+          <Info>Copy and paste the names below <Important>(each name on a new line)</Important> to get started!</Info>
+          <TextBox name="students" value={this.state.students} onChange={this.handleChange}/>
+          <Button onClick={this.addStudents}>Add Students</Button>
+        </>
+        :
+        <>
+        {this.state.step == 2 ?
+        <>
+            <Row>
+              <Column>{this.mapStudents()}</Column>
+              <Column>
+              <Option>
+                <OptionTitle>Select by gender:</OptionTitle>
+                <OptionRow>
+                  <OptionLabel>Yes</OptionLabel>
+                  <ByGender name="byGender" checked={this.state.byGender == "yes"} value={"yes"} onChange={this.handleChange} type="radio"/>
+                  <OptionLabel>No</OptionLabel>
+                  <ByGender name="byGender" checked={this.state.byGender == "no"} value={"no"} onChange={this.handleChange} type="radio"/>
+                </OptionRow>
+              </Option>
+              <Option>
+                <OptionTitle>Number of groups:</OptionTitle>
+                  <OptionRow>
+                    <NumGroups name="numGroups" value={this.state.numGroups} onChange={this.handleChange} type="text"></NumGroups>
+                  </OptionRow>
+              </Option>
+              </Column>
+            </Row>
+            <Button onClick={this.state.byGender === "yes" ? this.makeGroupsByGender : this.makeGroups}>Make Groups</Button>
+            </>
+          : 
+          <>
+          {this.mapGroups()}
+          </>}
+        </>
+        }
+      </Main>
+      : 
+      <div>
+        <h3>{this.state.error}</h3>
+        <button onClick={() => {this.setState({error: ""})}}>Go back</button>
+        </div>}
+    </>
     );
   }
   }

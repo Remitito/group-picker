@@ -69,7 +69,10 @@ export const TextBox = styled.textarea `
 export const Button = styled.button `
     width: 40%;
     margin: auto;
+    margin-top: 10px;
+    background-color: #ef9273;
     height: 30px;
+    border-radius: 2rem;
 `
 
 export const Row = styled.div `
@@ -110,6 +113,11 @@ export const Group = styled.div `
 export const GroupName = styled.label `
     width: 20%;
     line-height: 3;
+`
+
+export const Important = styled.label `
+    font-weight: bolder;
+    color: red;
 `
 
 export const StudentCont = styled.div `
