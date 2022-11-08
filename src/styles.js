@@ -36,12 +36,24 @@ export const OptionTitle = styled.h4 `
 `
 
 export const OptionLabel = styled.label `
+`
+
+export const Notice = styled.label `
+    max-width: 80%;
+    margin: auto;
+    background-color: #ef9273;
+    font-size: 1.2rem;
+    border-radius: 2rem;
+    padding: 10px;
+`
+
+export const RadioButton = styled.input `
 
 `
 
-export const ByGender = styled.input `
+export const ToAvoid = styled.button `
 
-`
+` 
 
 export const NumGroups = styled.input `
     width: 30%;
@@ -66,12 +78,18 @@ export const TextBox = styled.textarea `
     resize: vertical;
 `
 
+export const Title = styled.h1 `
+   
+
+`
+
 export const Button = styled.button `
     width: 40%;
     margin: auto;
     margin-top: 10px;
     background-color: #ef9273;
-    height: 30px;
+    font-size: 1.5rem;
+    height: 70px;
     border-radius: 2rem;
 `
 
