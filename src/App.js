@@ -12,9 +12,9 @@ class App extends React.Component {
     this.state = {
       students: "",
       nameArray: ["Jack", "Jane", "Sarah", "Frank", "Keith", "Rachel", "Melvin"],
-      studentInfo: [["Jack", "m", []], ["Jane", "f", []], ["Sarah", "f", []], ["Frank", "m", []], ["Keith", "m", []], ["Rachel", "f", []], ["Melvin", "m", []]],
+      studentInfo: [["Jack", "m", [""]], ["Jane", "f", []], ["Sarah", "f", [""]], ["Frank", "m", []], ["Keith", "m", []], ["Rachel", "f", []], ["Melvin", "m", []]],
       step: 2,
-      groups: [["Jack", "Jane", "Sarah", "Frank"], ["Keith", "Rachel", "Melvin"]],
+      groups: [],
       byGender: "no",
       numGroups: 2,
       student1: ["", 0],
@@ -101,7 +101,7 @@ class App extends React.Component {
     return arr;
   }
 
-  makeGroupsByGender = (e) => {
+  makeGroupsByGender = () => {
     // Add group arrays
     let output = []
     for (let i = 0; i < this.state.numGroups; i++) {
@@ -137,10 +137,40 @@ class App extends React.Component {
         }
       }
     }
+    while (!this.checkGroups(output)) {
+      this.makeGroupsByGender()
+    }
     this.setState({groups: output, step: 3})
   }
 
-  makeGroups = (e) => {
+  checkGroups = (groupList) => {
+    let success = true
+    groupList.forEach((group, groupNum) => {
+      group.forEach((member) => {
+        if(!this.checkAvoidList(member, group)) {
+          success = false
+        }
+      })
+    })
+    return success
+  }
+
+  checkAvoidList = (student, group) => {
+    for(let i = 0; i < this.state.studentInfo.length; i++) {
+      if(this.state.studentInfo[i][0] === student) {
+        let avoidList = this.state.studentInfo[i][2]
+        for(let e = 0; e < group.length; e++) {
+          if(avoidList.includes(group[e])) {
+            return false
+          }
+      }
+    }
+  }
+  return true
+}
+
+  makeGroups = () => {
+    console.log("make groups")
     // Add group arrays
     let output = []
     for (let i = 0; i < this.state.numGroups; i++) {
@@ -155,6 +185,9 @@ class App extends React.Component {
           output[i].push(name)
         }
       }
+    }
+    while (!this.checkGroups(output)) {
+      this.makeGroupsByGender()
     }
     this.setState({groups: output, step: 3})
   }
@@ -266,13 +299,14 @@ class App extends React.Component {
               </Option>
               </Column>
             </Row>
-            <Button onClick={this.state.byGender === "yes" ? this.makeGroupsByGender : this.makeGroups}>Make Groups</Button>
+            <Button onClick={this.state.byGender === "yes" ? () => this.makeGroupsByGender() : () => this.makeGroups()}>Make Groups</Button>
             </>
           : 
           <>
             {this.state.step === 3 ?
             <>
               {this.mapGroups()}
+              <Button onClick={() => console.log(this.state.groups)}>Test</Button>
             </>
             :
             <>
