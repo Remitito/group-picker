@@ -1,8 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Abyssinica+SIL&family=Rubik&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Abyssinica+SIL&family=Anton&family=Rubik&display=swap');
+
 .title {
     font-family: 'Abyssinica SIL', serif;
 }
 
 .rubik {
     font-family: 'Rubik', sans-serif;
+}
+
+.anton {
+    font-family: 'Anton', sans-serif;
 }

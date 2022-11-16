@@ -52,7 +52,8 @@ export const RadioButton = styled.input `
 `
 
 export const ToAvoid = styled.button `
-
+    background-color: red;
+    color: white;
 ` 
 
 export const NumGroups = styled.input `
@@ -63,11 +64,15 @@ export const NumGroups = styled.input `
     text-align: center;
 `
 
-export const Gender = styled.button `
-    border-style: solid;
+export const GenderLogo = styled.img `
+    height: 80%;
+    margin-top: 5%;
+    width: 20px;
+`
+
+export const Gender = styled.a `
     width: 50%;
-    color: ${({gender}) => gender == "m" ? 'red' : 'purple'};
-    background-color: ${({selected}) => selected ? 'blue' : ''};
+    background-color: ${({selected}) => selected ? 'lightblue' : 'white'};
 `
 export const Name = styled.label `
     width: 40%;
@@ -113,24 +118,23 @@ export const Column = styled.div `
 
 export const Member = styled.div `
     display: flex;
-    height: 40px;
-    line-height: 2;
+    padding: 10px;
     flex-direction: row;
-    width: 25%;
-    border-style: solid;
+    margin: auto;
     display:table-cell;
 `
 
 export const Group = styled.div `
     display: flex;
-    width: 500px;
-    flex-direction: row;
+    width: ${({width}) => width};
+    margin: auto;
+    margin-bottom: 30px;
     border-style: solid;
 `
 
 export const GroupName = styled.label `
-    width: 20%;
-    line-height: 3;
+    width: 30%;
+    margin: auto;
 `
 
 export const Important = styled.label `
@@ -148,14 +152,21 @@ export const Change = styled.button `
 
 `
 
+export const ChangeCont = styled.div `
+    display: flex;
+    flex-direction: row;
+`
+
 
 // not a styled component, used for inline styling
 export const IconStyleMan = {
     color: "white",
-    backgroundColor: "red" 
+    backgroundColor: "red", 
+    height: "100%"
 }
 
 export const IconStyleWoman = {
     color: "white",
     backgroundColor: "pink",
+    height: "100%"
 }

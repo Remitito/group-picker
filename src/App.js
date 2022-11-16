@@ -1,10 +1,13 @@
 import {Main, Info, TextBox, Button, Column, Name, OptionTitle, NumGroups, GroupName, Notice,
-  Row, Student, Gender, GenderCont, Title, ToAvoid, OptionLabel, Important, Change, Member, 
+  Row, Student, Gender, GenderCont, Title, ToAvoid, ChangeCont, OptionLabel, Important, Change, Member, GenderLogo,
   StudentCont, Option, OptionRow, Group, RadioButton} from './styles'
-// import { IoManSharp, IoWomanSharp} from "react-icons/io5"; 
-// import { IconStyleMan, IconStyleWoman } from './styles';
+import { IoManSharp, IoWomanSharp} from "react-icons/io5"; 
+import { IconStyleMan, IconStyleWoman } from './styles';
 import React from "react";
 import './fonts.css';
+
+
+// Todo: Add back in change radio button as realised it was for the gender part 
 
 class App extends React.Component {
   constructor() {
@@ -13,8 +16,9 @@ class App extends React.Component {
       students: "",
       nameArray: ["Jack", "Jane", "Sarah", "Frank", "Keith", "Rachel", "Melvin"],
       studentInfo: [["Jack", "m", [""]], ["Jane", "f", []], ["Sarah", "f", [""]], ["Frank", "m", []], ["Keith", "m", []], ["Rachel", "f", []], ["Melvin", "m", []]],
-      step: 2,
-      groups: [],
+      step: 3,
+      groups: [["Melvin", "Jane", "Sarah", "Frank"], ["Rachel", "Keith", "Jack"]],
+      biggestGroup: 4,
       byGender: "no",
       numGroups: 2,
       student1: ["", 0],
@@ -23,14 +27,15 @@ class App extends React.Component {
       toAvoid: []
     }
   }
-  
+
+
   handleChange = (e) => {
     let name = e.target.name
     let value = e.target.value
     this.setState({[name]: value})
   }
 
-  addToAvoid = (name) => {
+  addToAvoid = (name) => { // add to current avoid list
     let toAvoidCopy = this.state.toAvoid
     if(toAvoidCopy.includes(name)) {
       toAvoidCopy.splice(toAvoidCopy.indexOf(name), 1)
@@ -41,7 +46,7 @@ class App extends React.Component {
     this.setState({toAvoid: toAvoidCopy})
   }
 
-  updateAvoidInfo = () => {
+  updateAvoidInfo = () => { // update student info using current avoid list
     let studentInfoCopy = this.state.studentInfo
     studentInfoCopy.forEach((student, index) => {
       if(student[0] === this.state.currentStudent) {
@@ -54,7 +59,7 @@ class App extends React.Component {
     this.setState({studentInfo: studentInfoCopy, step: 2})
   } 
 
-  loadAvoidPage = (name) => {
+  loadAvoidPage = (name) => { // show avoid list page
     if(name === this.state.currentStudent) {
       this.setState({step: 4})
     }
@@ -63,7 +68,7 @@ class App extends React.Component {
     }
   }
 
-  addStudents = () => {
+  addStudents = () => { // turn initial name list into student name array and student info array
     let studentNames = this.state.students.split(/\r?\n/)
       if(studentNames.length < 4) {
         this.setState({error: "Please enter at least 4 names"})
@@ -83,12 +88,7 @@ class App extends React.Component {
         nameArray: studentNames})
       }
     }
-  
-    handleRadioButton = (e) => {
-      let arrayCopy = this.state.studentInfo
-      arrayCopy[e.target.name][1] = e.target.value
-      this.setState({studentInfo: arrayCopy})
-  }
+
 
   randomize = (arr) => {
     var i, j, tmp;
@@ -169,14 +169,11 @@ class App extends React.Component {
   return true
 }
 
-  makeGroups = () => {
-    console.log("make groups")
-    // Add group arrays
+  makeGroups = () => { // Make groups not based on gender
     let output = []
     for (let i = 0; i < this.state.numGroups; i++) {
       output.push([])
     }
-    // Add students' names
     let namesShuffled = this.randomize(this.state.nameArray)
     while (namesShuffled.length > 0) {
       for (let i = 0; i < this.state.numGroups; i++) {
@@ -209,17 +206,61 @@ class App extends React.Component {
       this.setState({groups: groupsCopy, student1: ["", 0]})
     }
   }
+
+  changeGender = (key, gender) => {
+    let studentInfoCopy = this.state.studentInfo
+    if(studentInfoCopy[key][1] !== gender) {
+      studentInfoCopy[key][1] = gender
+    }
+    else {
+      studentInfoCopy[key][1] = ""
+    }
+    console.log(this.state.studentInfo[key])
+    this.setState({studentInfo: studentInfoCopy})
+  }
+
+  changeGroup = (direction, student, groupNum) => {
+    let groupsCopy = this.state.groups
+    console.log(groupsCopy)
+    groupsCopy[groupNum].splice(groupsCopy[groupNum].indexOf(student), 1)
+    if(direction === "up") {
+      if(groupsCopy[groupNum + 1]) {
+        groupsCopy[groupNum + 1].push(student)
+      }
+      else {
+        groupsCopy[0].push(student)
+      }
+    }
+    else {
+      if(groupsCopy[groupNum - 1]) {
+        groupsCopy[groupNum - 1].push(student)
+      }
+      else {
+        groupsCopy[groupsCopy.length - 1].push(student)
+      }
+    }
+    this.setState({groups: groupsCopy, student1: ["", 0], biggestGroup: this.getLongestGroup()})
+  }
+
+  getLongestGroup = () => {
+    let newBiggest = this.state.biggestGroup
+    this.state.groups.forEach(group => {
+      if(group.length > newBiggest) {
+        group.length = newBiggest
+      }})
+    return newBiggest 
+  }
   
   mapStudents = () => { 
   return this.state.studentInfo.map((student, key) => 
   <Student>
-    <Name>{student[0]} {student[2].length}</Name>
+    <Name>{student[0]}</Name>
     <GenderCont>
-      <Gender selected={this.state.studentInfo[key][1] === "m"} gender="m" name={key} value="m" onClick={(e) => this.handleRadioButton(e)}>Male</Gender>
-      <Gender selected={this.state.studentInfo[key][1] === "f"} gender="f" name={key} value="f" onClick={(e) => this.handleRadioButton(e)}>Female</Gender>
+      <Gender selected={this.state.studentInfo[key][1] === "m"} gender="m" name={key} onClick={() => this.changeGender(key, "m")} value="m"><GenderLogo src='/male.png'/></Gender>
+      <Gender selected={this.state.studentInfo[key][1] === "f"} gender="f" name={key} onClick={() => this.changeGender(key, "f")} value="f"><GenderLogo src='/female.png'/></Gender>
     </GenderCont>
-    <ToAvoid onClick={() => this.loadAvoidPage(student[0])}>
-      Set avoid list
+    <ToAvoid className='anton' onClick={() => this.loadAvoidPage(student[0])}>
+      Avoid
     </ToAvoid>
   </Student>)
   }
@@ -240,12 +281,16 @@ class App extends React.Component {
 
   mapGroups = () => {
     return this.state.groups.map((group, groupNum) => 
-      <Group>
+      <Group width={(this.state.biggestGroup * 100).toString() + "px"}>
         <GroupName>Group {groupNum + 1}</GroupName>
           <StudentCont>
             {group.map((student) => 
             <Member>{student}
-              <Change value={student} onClick={() => this.switchStudents(student, groupNum)}>C</Change>
+              <ChangeCont>
+                <Change value={student} onClick={() => this.switchStudents(student, groupNum)}>C</Change>
+                <Change value={student} onClick={() => this.changeGroup("up", student, groupNum)}>U</Change>
+                <Change value={student} onClick={() => this.changeGroup("down", student, groupNum)}>D</Change>
+              </ChangeCont>
             </Member>
             )}
           </StudentCont>
