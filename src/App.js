@@ -1,13 +1,11 @@
 import {Main, Info, TextBox, Button, Column, Name, OptionTitle, NumGroups, GroupName, Notice,
-  Row, Student, Gender, GenderCont, Title, ToAvoid, ChangeCont, OptionLabel, Important, Change, Member, GenderLogo,
+  Row, Student, Gender, GenderCont, ToAvoidLogo, Title, ChangeLogo, ToAvoid, ChangeCont, OptionLabel, Important, Change, Member, GenderLogo,
   StudentCont, Option, OptionRow, Group, RadioButton} from './styles'
 import { IoManSharp, IoWomanSharp} from "react-icons/io5"; 
 import { IconStyleMan, IconStyleWoman } from './styles';
 import React from "react";
 import './fonts.css';
 
-
-// Todo: Add back in change radio button as realised it was for the gender part 
 
 class App extends React.Component {
   constructor() {
@@ -16,9 +14,8 @@ class App extends React.Component {
       students: "",
       nameArray: ["Jack", "Jane", "Sarah", "Frank", "Keith", "Rachel", "Melvin"],
       studentInfo: [["Jack", "m", [""]], ["Jane", "f", []], ["Sarah", "f", [""]], ["Frank", "m", []], ["Keith", "m", []], ["Rachel", "f", []], ["Melvin", "m", []]],
-      step: 3,
+      step: 2,
       groups: [["Melvin", "Jane", "Sarah", "Frank"], ["Rachel", "Keith", "Jack"]],
-      biggestGroup: 4,
       byGender: "no",
       numGroups: 2,
       student1: ["", 0],
@@ -221,35 +218,31 @@ class App extends React.Component {
 
   changeGroup = (direction, student, groupNum) => {
     let groupsCopy = this.state.groups
-    console.log(groupsCopy)
     groupsCopy[groupNum].splice(groupsCopy[groupNum].indexOf(student), 1)
-    if(direction === "up") {
+    if(direction === "down") {
       if(groupsCopy[groupNum + 1]) {
+        console.log("Yes")
         groupsCopy[groupNum + 1].push(student)
       }
       else {
+        console.log("No")
         groupsCopy[0].push(student)
       }
     }
     else {
       if(groupsCopy[groupNum - 1]) {
+        console.log(`Pushing ${student} to ${groupsCopy[groupNum - 1]}`)
         groupsCopy[groupNum - 1].push(student)
+        console.log(groupsCopy[groupNum - 1])
       }
       else {
+        console.log("No")
         groupsCopy[groupsCopy.length - 1].push(student)
       }
     }
-    this.setState({groups: groupsCopy, student1: ["", 0], biggestGroup: this.getLongestGroup()})
+    this.setState({groups: groupsCopy, student1: ["", 0]})
   }
 
-  getLongestGroup = () => {
-    let newBiggest = this.state.biggestGroup
-    this.state.groups.forEach(group => {
-      if(group.length > newBiggest) {
-        group.length = newBiggest
-      }})
-    return newBiggest 
-  }
   
   mapStudents = () => { 
   return this.state.studentInfo.map((student, key) => 
@@ -260,7 +253,7 @@ class App extends React.Component {
       <Gender selected={this.state.studentInfo[key][1] === "f"} gender="f" name={key} onClick={() => this.changeGender(key, "f")} value="f"><GenderLogo src='/female.png'/></Gender>
     </GenderCont>
     <ToAvoid className='anton' onClick={() => this.loadAvoidPage(student[0])}>
-      Avoid
+      <ToAvoidLogo src="/avoid.png" />
     </ToAvoid>
   </Student>)
   }
@@ -281,15 +274,16 @@ class App extends React.Component {
 
   mapGroups = () => {
     return this.state.groups.map((group, groupNum) => 
-      <Group width={(this.state.biggestGroup * 100).toString() + "px"}>
+      <Group hide={group.length === 0}>
         <GroupName>Group {groupNum + 1}</GroupName>
           <StudentCont>
             {group.map((student) => 
             <Member>{student}
               <ChangeCont>
-                <Change value={student} onClick={() => this.switchStudents(student, groupNum)}>C</Change>
-                <Change value={student} onClick={() => this.changeGroup("up", student, groupNum)}>U</Change>
-                <Change value={student} onClick={() => this.changeGroup("down", student, groupNum)}>D</Change>
+                <Change value={student} onClick={() => this.switchStudents(student, groupNum)}>
+                  <ChangeLogo src={'/change.png'} background={student === this.state.student1[0]}/></Change>
+                <Change value={student} onClick={() => this.changeGroup("up", student, groupNum)}><ChangeLogo src={'/upArrow.png'}/></Change>
+                <Change value={student} onClick={() => this.changeGroup("down", student, groupNum)}><ChangeLogo src={'/downArrow.png'}/></Change>
               </ChangeCont>
             </Member>
             )}
@@ -334,7 +328,7 @@ class App extends React.Component {
                 </OptionRow>
               </Option>
               <Option>
-                <Notice className='rubik'>Press the "Avoid" button to choose which students you would prefer not to be put in the same group as a particular student</Notice>
+                <Notice className='anton'>Press the hand icon to choose which students you would prefer not to be put in the same group as a particular student</Notice>
               </Option>
               <Option>
                 <OptionTitle>Number of groups:</OptionTitle>
@@ -344,7 +338,7 @@ class App extends React.Component {
               </Option>
               </Column>
             </Row>
-            <Button onClick={this.state.byGender === "yes" ? () => this.makeGroupsByGender() : () => this.makeGroups()}>Make Groups</Button>
+            <Button className='anton' onClick={this.state.byGender === "yes" ? () => this.makeGroupsByGender() : () => this.makeGroups()}>Make Groups</Button>
             </>
           : 
           <>

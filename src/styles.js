@@ -17,6 +17,9 @@ export const Student = styled.div `
     line-height: 2;
     flex-direction: row;
     border-style: solid;
+    padding: 5px;
+    margin-bottom: 2px;
+    border-radius: 1rem;
 `
 
 export const GenderCont = styled.div `
@@ -41,7 +44,7 @@ export const OptionLabel = styled.label `
 export const Notice = styled.label `
     max-width: 80%;
     margin: auto;
-    background-color: #ef9273;
+    background-color: #5bccf6;
     font-size: 1.2rem;
     border-radius: 2rem;
     padding: 10px;
@@ -51,9 +54,14 @@ export const RadioButton = styled.input `
 
 `
 
-export const ToAvoid = styled.button `
-    background-color: red;
-    color: white;
+export const ToAvoid = styled.a `
+    background-color: #fcde67;
+` 
+export const ToAvoidLogo = styled.img `
+    height: 40px;
+    width: 40px;
+    margin-left: 5px;
+    line-height: 1;
 ` 
 
 export const NumGroups = styled.input `
@@ -68,11 +76,12 @@ export const GenderLogo = styled.img `
     height: 80%;
     margin-top: 5%;
     width: 20px;
+    
 `
 
 export const Gender = styled.a `
     width: 50%;
-    background-color: ${({selected}) => selected ? 'lightblue' : 'white'};
+    background-color: ${({selected}) => selected ? '#5bccf6' : '#fcde67'};
 `
 export const Name = styled.label `
     width: 40%;
@@ -84,15 +93,14 @@ export const TextBox = styled.textarea `
 `
 
 export const Title = styled.h1 `
-   
-
+    margin-bottom: 50px;
 `
 
 export const Button = styled.button `
     width: 40%;
     margin: auto;
     margin-top: 10px;
-    background-color: #ef9273;
+    background-color: #5bccf6;
     font-size: 1.5rem;
     height: 70px;
     border-radius: 2rem;
@@ -101,6 +109,7 @@ export const Button = styled.button `
 export const Row = styled.div `
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
 `
 
 export const OptionRow = styled.div `
@@ -113,7 +122,7 @@ export const Column = styled.div `
     display: flex;
     min-height: 300px;
     flex-direction: column;
-    width: 50%;
+    width: 45%;
 `
 
 export const Member = styled.div `
@@ -126,14 +135,15 @@ export const Member = styled.div `
 
 export const Group = styled.div `
     display: flex;
-    width: ${({width}) => width};
     margin: auto;
+    padding: 20px;
+    visibility: ${({hide}) => hide ? 'hidden' : ''};
     margin-bottom: 30px;
     border-style: solid;
+    border-radius: 1rem;
 `
 
 export const GroupName = styled.label `
-    width: 30%;
     margin: auto;
 `
 
@@ -144,12 +154,20 @@ export const Important = styled.label `
 
 export const StudentCont = styled.div `
     display: flex;
-    width: 80%;
     flex-direction: row;
 `
 
-export const Change = styled.button `
+export const Change = styled.a `
 
+`
+
+export const ChangeLogo = styled.img `
+    height: 20px;
+    padding: 5px;
+    background-color: ${({background}) => background ? 'red' : ''};
+    &:hover {
+        background-color: #ef9273;
+    }
 `
 
 export const ChangeCont = styled.div `
