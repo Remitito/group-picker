@@ -7,8 +7,21 @@ export const Main = styled.div `
     text-align: center;
 `
 
-export const Info = styled.p `
+export const Info = styled.div `
     font-size: larger;
+    background-color: #5bccf6;
+    padding: 10px;
+    border: solid;
+    border-radius: 1rem;
+    margin-bottom: 5px;
+`
+
+export const InfoSection = styled.label `
+    background-color: ${({selected}) => selected ? '#fcde67' : '#5bccf6'};
+    border-radius: 1rem;
+    padding: 10px;
+    font-weight: ${({selected}) => selected ? 'bolder' : ''};
+    font-size: ${({selected}) => selected ? '1.3rem' : ''};
 `
 
 export const Student = styled.div `
@@ -87,9 +100,12 @@ export const Name = styled.label `
     width: 40%;
 `
 
+
 export const TextBox = styled.textarea `
     min-height: 300px;
     resize: vertical;
+    width: 300px;
+    border-radius: 0.5rem;
 `
 
 export const Title = styled.h1 `
@@ -101,9 +117,13 @@ export const Button = styled.button `
     margin: auto;
     margin-top: 10px;
     background-color: #5bccf6;
+    border: solid;
     font-size: 1.5rem;
     height: 70px;
     border-radius: 2rem;
+    &:hover {
+        background-color: #ef9273;
+    }
 `
 
 export const Row = styled.div `
@@ -127,16 +147,16 @@ export const Column = styled.div `
 
 export const Member = styled.div `
     display: flex;
-    padding: 10px;
+    padding: 10px 10px 10px 10px;
     flex-direction: row;
     margin: auto;
     display:table-cell;
 `
 
 export const Group = styled.div `
-    display: flex;
     margin: auto;
     padding: 20px;
+    background-color: #5bccf6;
     visibility: ${({hide}) => hide ? 'hidden' : ''};
     margin-bottom: 30px;
     border-style: solid;
@@ -145,16 +165,13 @@ export const Group = styled.div `
 
 export const GroupName = styled.label `
     margin: auto;
-`
-
-export const Important = styled.label `
-    font-weight: bolder;
-    color: red;
+    padding-right: 10px;
 `
 
 export const StudentCont = styled.div `
     display: flex;
-    flex-direction: row;
+    flex-wrap: wrap;
+    max-width: 600px;
 `
 
 export const Change = styled.a `
@@ -174,17 +191,3 @@ export const ChangeCont = styled.div `
     display: flex;
     flex-direction: row;
 `
-
-
-// not a styled component, used for inline styling
-export const IconStyleMan = {
-    color: "white",
-    backgroundColor: "red", 
-    height: "100%"
-}
-
-export const IconStyleWoman = {
-    color: "white",
-    backgroundColor: "pink",
-    height: "100%"
-}

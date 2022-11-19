@@ -1,11 +1,12 @@
 import {Main, Info, TextBox, Button, Column, Name, OptionTitle, NumGroups, GroupName, Notice,
-  Row, Student, Gender, GenderCont, ToAvoidLogo, Title, ChangeLogo, ToAvoid, ChangeCont, OptionLabel, Important, Change, Member, GenderLogo,
-  StudentCont, Option, OptionRow, Group, RadioButton} from './styles'
-import { IoManSharp, IoWomanSharp} from "react-icons/io5"; 
-import { IconStyleMan, IconStyleWoman } from './styles';
+  Row, Student, Gender, GenderCont, ToAvoidLogo, Title, ChangeLogo, ToAvoid, ChangeCont, OptionLabel, Change, Member, GenderLogo,
+  StudentCont, Option, OptionRow, InfoSection, Group, RadioButton} from './styles'
 import React from "react";
 import './fonts.css';
 
+// Change avoiding list to different styling for currently avoided student buttons
+// Back button when viewing groups is clearing the groups
+// Add hover highlighting to gender and avoid buttons
 
 class App extends React.Component {
   constructor() {
@@ -20,6 +21,7 @@ class App extends React.Component {
       numGroups: 2,
       student1: ["", 0],
       error: "",
+      errorCode: "",
       currentStudent: "", 
       toAvoid: []
     }
@@ -29,7 +31,7 @@ class App extends React.Component {
   handleChange = (e) => {
     let name = e.target.name
     let value = e.target.value
-    this.setState({[name]: value})
+    this.setState({[name]: value, errorCode: ""})
   }
 
   addToAvoid = (name) => { // add to current avoid list
@@ -68,11 +70,11 @@ class App extends React.Component {
   addStudents = () => { // turn initial name list into student name array and student info array
     let studentNames = this.state.students.split(/\r?\n/)
       if(studentNames.length < 4) {
-        this.setState({error: "Please enter at least 4 names"})
+        this.setState({error: "Please enter at least 4 names", errorCode: "4"})
         return
       }
       if(studentNames.length !== new Set(studentNames).size) {
-        this.setState({error: "Please ensure all names are different"})
+        this.setState({error: "Please ensure all names are different", errorCode: "unique"})
         return
       }
       else {
@@ -247,7 +249,7 @@ class App extends React.Component {
   mapStudents = () => { 
   return this.state.studentInfo.map((student, key) => 
   <Student>
-    <Name>{student[0]}</Name>
+    <Name className='anton'>{student[0]}</Name>
     <GenderCont>
       <Gender selected={this.state.studentInfo[key][1] === "m"} gender="m" name={key} onClick={() => this.changeGender(key, "m")} value="m"><GenderLogo src='/male.png'/></Gender>
       <Gender selected={this.state.studentInfo[key][1] === "f"} gender="f" name={key} onClick={() => this.changeGender(key, "f")} value="f"><GenderLogo src='/female.png'/></Gender>
@@ -278,7 +280,7 @@ class App extends React.Component {
         <GroupName>Group {groupNum + 1}</GroupName>
           <StudentCont>
             {group.map((student) => 
-            <Member>{student}
+            <Member className='anton'>{student}
               <ChangeCont>
                 <Change value={student} onClick={() => this.switchStudents(student, groupNum)}>
                   <ChangeLogo src={'/change.png'} background={student === this.state.student1[0]}/></Change>
@@ -301,16 +303,17 @@ class App extends React.Component {
   render() {
   
   return (
-    <>
-    {this.state.error.length === 0 ?
       <Main>
         <Title className='title'>Group Picker</Title>
         {this.state.step === 1 ?
-        <>
-          <Info className='rubik'>Copy and paste the names below <Important className='rubik'>(each name on a new line)</Important> to get started!</Info>
+        <Row>
           <TextBox name="students" value={this.state.students} onChange={this.handleChange}/>
-          <Button className='title' onClick={this.addStudents}>Add Students</Button>
-        </>
+          <Column>
+            <Info className='rubik'>Enter names then press confirm</Info>
+            <Button className='anton' onClick={this.addStudents}>Confirm</Button>
+            <Info className='rubik'><InfoSection>1 name per line</InfoSection><p></p><InfoSection selected={this.state.errorCode === "4"}>Minimum of 4 names</InfoSection><p></p><InfoSection selected={this.state.errorCode === "unique"}>No repeated names</InfoSection></Info>
+          </Column>
+        </Row>
         :
         <>
         {this.state.step === 2 ?
@@ -319,7 +322,7 @@ class App extends React.Component {
               <Column>{this.mapStudents()}</Column>
               <Column>
               <Option>
-                <OptionTitle>Select by gender:</OptionTitle>
+                <OptionTitle>Split by gender:</OptionTitle>
                 <OptionRow>
                   <OptionLabel>Yes</OptionLabel>
                   <RadioButton name="byGender" checked={this.state.byGender === "yes"} value={"yes"} onChange={this.handleChange} type="radio"/>
@@ -345,7 +348,7 @@ class App extends React.Component {
             {this.state.step === 3 ?
             <>
               {this.mapGroups()}
-              <Button onClick={() => console.log(this.state.groups)}>Test</Button>
+              <Button className='anton' onClick={() => this.setState({step: 2})}>Back</Button>
             </>
             :
             <>
@@ -362,12 +365,6 @@ class App extends React.Component {
         </>
         }
       </Main>
-      : 
-      <div>
-        <h3>{this.state.error}</h3>
-        <button onClick={() => {this.setState({error: ""})}}>Go back</button>
-      </div>}
-    </>
     );
   }
   }
