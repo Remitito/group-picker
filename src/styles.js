@@ -68,8 +68,34 @@ export const RadioButton = styled.input `
 `
 
 export const ToAvoid = styled.a `
-    background-color: #fcde67;
+    background-color: ${({selected}) => selected ? '#5bccf6' : '#fcde67'};
+    &:hover {
+        background-color: #ef9273;
+    }
 ` 
+
+export const AvoidStudent = styled.button `
+    padding: 10px;
+    margin-bottom: 5px;
+    width: 200px;
+    font-size: 15px;
+    border: solid;
+    border-radius: 2rem;
+    border-width: 5px;
+    border-color: black;
+    background-color: ${({selected}) => selected ? '#5bccf6' : '#fcde67'};
+    &:hover {
+        background-color: #ef9273;
+    }
+`
+
+export const AvoidCont = styled.div `
+    display: flex;
+    flex-wrap: wrap;
+    margin: auto;
+    max-width: 400px;
+`
+
 export const ToAvoidLogo = styled.img `
     height: 40px;
     width: 40px;
