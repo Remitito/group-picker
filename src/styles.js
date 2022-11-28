@@ -68,10 +68,19 @@ export const RadioButton = styled.input `
 `
 
 export const ToAvoid = styled.a `
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
     background-color: ${({selected}) => selected ? '#5bccf6' : '#fcde67'};
     &:hover {
         background-color: #ef9273;
     }
+` 
+
+export const ToAvoidLogo = styled.img `
+    height: 100%;
+    width: 100%;
+    line-height: 1;
 ` 
 
 export const AvoidStudent = styled.button `
@@ -96,12 +105,6 @@ export const AvoidCont = styled.div `
     max-width: 400px;
 `
 
-export const ToAvoidLogo = styled.img `
-    height: 40px;
-    width: 40px;
-    margin-left: 5px;
-    line-height: 1;
-` 
 
 export const NumGroups = styled.input `
     width: 30%;
@@ -119,8 +122,12 @@ export const GenderLogo = styled.img `
 `
 
 export const Gender = styled.a `
-    width: 50%;
+    width: 40%;
+    border-radius: 50%;
     background-color: ${({selected}) => selected ? '#5bccf6' : '#fcde67'};
+    &:hover {
+        background-color: #ef9273;
+    }
 `
 export const Name = styled.label `
     width: 40%;
@@ -201,12 +208,13 @@ export const StudentCont = styled.div `
 `
 
 export const Change = styled.a `
-
+    
 `
 
 export const ChangeLogo = styled.img `
     height: 20px;
     padding: 5px;
+    border-radius: 50%;
     background-color: ${({background}) => background ? 'red' : ''};
     &:hover {
         background-color: #ef9273;

@@ -11,7 +11,6 @@ const randomize = (arr) => {
 
 const changeGroupFunc = (direction, student, groupNum, groups) => {
     let groupsCopy = groups
-    console.log("Helo")
     groupsCopy[groupNum].splice(groupsCopy[groupNum].indexOf(student), 1)
     if(direction === "down") {
       if(groupsCopy[groupNum + 1]) {
@@ -32,22 +31,6 @@ const changeGroupFunc = (direction, student, groupNum, groups) => {
     return groupsCopy
   }
 
-// const makeGroupsFunc = (numGroups, names) => { 
-//   let namesShuffled = randomize(names)
-//   let output = []
-//   for (let i = 0; i < numGroups; i++) {
-//     output.push([])
-//   }
-//   while (namesShuffled.length > 0) {
-//     for (let i = 0; i < numGroups; i++) {
-//       if (namesShuffled.length > 0) {
-//         let name = namesShuffled.pop()
-//         output[i].push(name)
-//       }
-//     }
-//   } 
-//   return output
-// }
 
 const makeGroupsByGenderFunc = (numGroups, studentInfo) => {
     // Add group arrays
@@ -88,27 +71,92 @@ const makeGroupsByGenderFunc = (numGroups, studentInfo) => {
     return output
   }
 
-const makeGroupsFunc = (numGroups, studentInfo) => {
-  // Add group arrays
-  let output = []
-  for (let i = 0; i < numGroups; i++) {
-    output.push([])
+  // same as above but according to members per group not number of groups
+  const makeGroupsByGenderMemFunc = (numGroups, studentInfo) => {
+    let output = []
+    // Split male/female
+    let male = []
+    let female = []
+    studentInfo.forEach(student => {
+      if(student[1] === "m") {
+        male.push(student[0])
+      }
+      else {
+        female.push(student[0])
+      }
+    })
+    let maleShuffled = randomize(male)
+    let femaleShuffled = randomize(female)
+    // Assign groups
+    while (maleShuffled.length > 0 || femaleShuffled.length > 0) {
+      let newGroup = []
+      let counter = 1
+      while (counter < numGroups) { 
+        if(maleShuffled.length > 0) {
+          let male = maleShuffled.pop()
+          newGroup.push(male)
+          counter += 1
+          if(femaleShuffled.length > 0) {
+            let female = femaleShuffled.pop()
+            newGroup.push(female)
+            counter += 1
+          }
+          else {
+            if(maleShuffled.length > 0) {
+              let maleTwo = maleShuffled.pop()
+              newGroup.push(maleTwo) 
+              counter += 1
+            }
+          }
+        }
+        else {
+          let female = femaleShuffled.pop()
+          newGroup.push(female)
+          counter += 1
+        }
+      output.push(newGroup)
+      }
+    }
+    return output
   }
+
+
+const makeGroupsFunc = (numGroups, studentInfo, perGroup) => {
+  let output = []
   // Get names
   let names = []
   randomize(studentInfo).forEach(student => {
       names.push(student[0])
   })
-  // Assign groups
-  while (names.length > 0) {
+  // Assign groups for number of groups
+  if(!perGroup) {
+    // Add group arrays
     for (let i = 0; i < numGroups; i++) {
+      output.push([])
+    }
+    while (names.length > 0) {
+      for (let i = 0; i < numGroups; i++) {
+          if(names.length > 0) {
+            let name = names.pop()
+            output[i].push(name)
+          }
+      }
+    }
+  }
+  else {
+   // Assign groups for number per group
+    while (names.length > 0) {
+      let newGroup = []
+      for (let i = 0; i < numGroups; i++) {
         if(names.length > 0) {
           let name = names.pop()
-          output[i].push(name)
+          newGroup.push(name)
         }
+      }
+      output.push(newGroup)
     }
   }
   return output
 }
 
-export {changeGroupFunc, makeGroupsFunc, makeGroupsByGenderFunc};
+export {changeGroupFunc, makeGroupsFunc, makeGroupsByGenderFunc, makeGroupsByGenderMemFunc};

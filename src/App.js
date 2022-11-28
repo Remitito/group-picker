@@ -2,13 +2,13 @@ import {Main, Info, TextBox, Button, Column, Name, OptionTitle, NumGroups, Group
   Row, Student, Gender, GenderCont, ToAvoidLogo, Title, ChangeLogo, ToAvoid, ChangeCont, OptionLabel, Change, Member, GenderLogo,
   StudentCont, Option, OptionRow, AvoidStudent, AvoidCont, InfoSection, Group, RadioButton} from './styles'
 import React from "react";
-import {changeGroupFunc, makeGroupsFunc, makeGroupsByGenderFunc} from './GroupHandling.js';
+import {changeGroupFunc, makeGroupsByGenderMemFunc, makeGroupsFunc, makeGroupsByGenderFunc} from './GroupHandling.js';
 import './fonts.css';
 
 // Make it so they can choose by students per group NEED TO FINISH
-// Fix square highlighting on avoid hand
-// Back button when viewing groups is clearing the groups
-// Add hover highlighting to gender and avoid buttons
+// Can export groups as a jpg
+// Can add divisions to group or labels to certain members
+// Make it so that moving out of bounds makes a new group
 
 class App extends React.Component {
   constructor() {
@@ -126,8 +126,14 @@ class App extends React.Component {
   return true
 }
 
-  makeGroups = () => { 
-    let output = makeGroupsFunc(this.state.numGroups, this.state.studentInfo)
+  makeGroups = () => {
+    let output = []
+    if(this.state.chooseByNumGroups) { 
+      output = makeGroupsFunc(this.state.numGroups, this.state.studentInfo, false)
+    }
+    else {
+      output = makeGroupsFunc(this.state.numGroups, this.state.studentInfo, true)
+    }
     while (!this.checkGroups(output)) {
       this.makeGroups()
     }
@@ -135,8 +141,14 @@ class App extends React.Component {
   }
 
   makeGroupsByGender = () => {
-    let output = makeGroupsByGenderFunc(this.state.numGroups, this.state.studentInfo)
-    while (!this.checkGroups(output)) {
+    let output = []
+    if(this.state.chooseByNumGroups) {
+      output = makeGroupsByGenderFunc(this.state.numGroups, this.state.studentInfo)
+    }
+    else {
+      output = makeGroupsByGenderMemFunc(this.state.numGroups, this.state.studentInfo)
+    }
+      while (!this.checkGroups(output)) {
       this.makeGroupsByGender()
     }
     this.setState({groups: output, step: 3})
@@ -221,9 +233,9 @@ class App extends React.Component {
     )
   }
 
-  avoidList = () => {
+  mapAvoidList = () => {
     return this.state.toAvoid.map((student) => 
-      <label>{student}</label>
+      <p>{student}</p>
     )
   }
   
@@ -296,7 +308,7 @@ class App extends React.Component {
               {this.mapStudentsToAvoid()}
               </AvoidCont>
               <h3>
-                Currently avoiding: {this.avoidList()}
+                Currently avoiding: {this.mapAvoidList()}
               </h3>
               <Button className='anton' onClick={() => this.updateAvoidInfo()}>
                 Confirm
