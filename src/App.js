@@ -2,13 +2,16 @@ import {Main, Info, TextBox, Button, Column, Name, OptionTitle, NumGroups, Group
   Row, Student, Gender, GenderCont, ToAvoidLogo, Title, ChangeLogo, ToAvoid, ChangeCont, OptionLabel, Change, Member, GenderLogo,
   StudentCont, Option, OptionRow, AvoidStudent, AvoidCont, InfoSection, Group, RadioButton} from './styles'
 import React from "react";
+import html2canvas from 'html2canvas';
+import jspdf from 'jspdf'
 import {changeGroupFunc, makeGroupsByGenderMemFunc, makeGroupsFunc, makeGroupsByGenderFunc} from './GroupHandling.js';
 import './fonts.css';
+import jsPDF from 'jspdf';
 
-// Make it so they can choose by students per group NEED TO FINISH
-// Can export groups as a jpg
-// Can add divisions to group or labels to certain members
+// Style "Choose by number per group" button
+// Style gender buttons 
 // Make it so that moving out of bounds makes a new group
+// Can add divisions to group or labels to certain members
 
 class App extends React.Component {
   constructor() {
@@ -35,6 +38,18 @@ class App extends React.Component {
     let name = e.target.name
     let value = e.target.value
     this.setState({[name]: value, errorCode: ""})
+  }
+
+  doCapture = () => {
+    const input = document.getElementById("groupCont")
+    html2canvas(input, {logging: true, letterRendering: 1, useCORS: true}).then(canvas => {
+      const imgWidth = 200;
+      const imgHeight = canvas.height * imgWidth / canvas.width
+      const imgData = canvas.toDataURL('img/png')
+      const pdf = new jsPDF('p', 'mm', 'a4')
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight)
+      pdf.save('groups.pdf')
+    })
   }
 
   addToAvoid = (name) => { // add to current avoid list
@@ -90,7 +105,7 @@ class App extends React.Component {
         return
       }
       else {
-        const output = []
+        let output = []
         studentNames.forEach((name) => {
         output.push([name, "", ""])
       })
@@ -100,31 +115,23 @@ class App extends React.Component {
       }
     }
 
-  checkGroups = (groupList) => {
-    let success = true
+  checkGroups = (groupList) => { // check group members arent on avoid list
     groupList.forEach((group, groupNum) => {
       group.forEach((member) => {
-        if(!this.checkAvoidList(member, group)) {
-          success = false
+        for(let i = 0; i < this.state.studentInfo.length; i++) {
+          if(this.state.studentInfo[i][0] === member) {
+            let avoidList = this.state.studentInfo[i][2]
+            for(let e = 0; e < group.length; e++) {
+              if(avoidList.includes(group[e])) {
+                return false
+              }
+            }
+          }
         }
       })
     })
-    return success
+    return true
   }
-
-  checkAvoidList = (student, group) => {
-    for(let i = 0; i < this.state.studentInfo.length; i++) {
-      if(this.state.studentInfo[i][0] === student) {
-        let avoidList = this.state.studentInfo[i][2]
-        for(let e = 0; e < group.length; e++) {
-          if(avoidList.includes(group[e])) {
-            return false
-          }
-      }
-    }
-  }
-  return true
-}
 
   makeGroups = () => {
     let output = []
@@ -216,7 +223,7 @@ class App extends React.Component {
   mapGroups = () => {
     return this.state.groups.map((group, groupNum) => 
       <Group hide={group.length === 0}>
-        <GroupName>Group {groupNum + 1}</GroupName>
+        <GroupName className='nerko'>Group {groupNum + 1}</GroupName>
           <StudentCont>
             {group.map((student) => 
             <Member className='anton'>{student}
@@ -298,8 +305,13 @@ class App extends React.Component {
           <>
             {this.state.step === 3 ?
             <>
+              <div style={{"backgroundColor": "#fcde67"}} id="groupCont">
               {this.mapGroups()}
-              <Button className='anton' onClick={() => this.setState({step: 2})}>Back</Button>
+              </div>
+              <div style={{'display': 'flex', 'flexDirection': 'row'}}>
+                <Button className='anton' onClick={() => this.setState({step: 2})}>Back</Button>
+                <Button className='anton' onClick={() => this.doCapture()}>Save as PDF</Button>
+              </div>
             </>
             :
             <>

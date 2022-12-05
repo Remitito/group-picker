@@ -182,7 +182,11 @@ export const Member = styled.div `
     display: flex;
     padding: 10px 10px 10px 10px;
     flex-direction: row;
+    background-color: #fcde67;
+    border-radius: 3rem;
+    border: solid;
     margin: auto;
+    font-size: 1.5rem;
     display:table-cell;
 `
 
@@ -198,13 +202,14 @@ export const Group = styled.div `
 
 export const GroupName = styled.label `
     margin: auto;
-    padding-right: 10px;
+    font-size: 2rem;
 `
 
 export const StudentCont = styled.div `
     display: flex;
     flex-wrap: wrap;
     max-width: 600px;
+    margin-top: 15px;
 `
 
 export const Change = styled.a `
