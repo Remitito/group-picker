@@ -1,6 +1,6 @@
 import {Main, Info, TextBox, Button, Column, Name, OptionTitle, NumGroups, GroupName, Notice,
-  Row, Student, Gender, GenderCont, ToAvoidLogo, Title, ChangeLogo, ToAvoid, ChangeCont, OptionLabel, Change, Member, GenderLogo,
-  StudentCont, Option, OptionRow, AvoidStudent, AvoidCont, InfoSection, Group, RadioButton} from './styles'
+  Row, Student, Gender, GenderCont, GroupButton, ToAvoidLogo, Title, ChangeLogo, ToAvoid, ChangeCont, OptionLabel, Change, Member, GenderLogo,
+  StudentCont, OptionRow, AvoidStudent, YesLogo, YesCont, NoLogo, NoCont, AvoidCont, InfoSection, Group, RadioButton} from './styles'
 import React from "react";
 import html2canvas from 'html2canvas';
 import jspdf from 'jspdf'
@@ -20,7 +20,7 @@ class App extends React.Component {
       students: "",
       nameArray: ["Jack", "Jane", "Sarah", "Frank", "Keith", "Rachel", "Melvin"],
       studentInfo: [["Jack", "m", [""]], ["Jane", "f", []], ["Sarah", "f", [""]], ["Frank", "m", []], ["Keith", "m", []], ["Rachel", "f", []], ["Melvin", "m", []]],
-      step: 2,
+      step: 3,
       groups: [["Melvin", "Jane", "Sarah", "Frank"], ["Rachel", "Keith", "Jack"]],
       byGender: "no",
       numGroups: 2,
@@ -46,8 +46,17 @@ class App extends React.Component {
       const imgWidth = 200;
       const imgHeight = canvas.height * imgWidth / canvas.width
       const imgData = canvas.toDataURL('img/png')
-      const pdf = new jsPDF('p', 'mm', 'a4')
-      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight)
+      let groupsString = "\n \n \n "
+      for(let i = 0; i < this.state.groups.length; i++) {
+        let currentString = "\n \n Group " + (i + 1) + ": "
+        for(let e = 0; e < this.state.groups[i].length; e++) {
+          currentString += this.state.groups[i][e] + " "
+        }
+        groupsString += currentString
+      }
+      const pdf = new jsPDF()
+      pdf.text(groupsString, 1, 1)
+      // pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight)
       pdf.save('groups.pdf')
     })
   }
@@ -267,38 +276,37 @@ class App extends React.Component {
             <Row>
               <Column>{this.mapStudents()}</Column>
               <Column>
-              <Option>
-                <OptionTitle>Split by gender:</OptionTitle>
+              <Notice className='anton'>Press the hand icon to choose which students you would prefer not to be put in the same group as a particular student</Notice>
                 <OptionRow>
-                  <OptionLabel>Yes</OptionLabel>
-                  <RadioButton name="byGender" checked={this.state.byGender === "yes"} value={"yes"} onChange={this.handleChange} type="radio"/>
-                  <OptionLabel>No</OptionLabel>
-                  <RadioButton name="byGender" checked={this.state.byGender === "no"} value={"no"} onChange={this.handleChange} type="radio"/>
+                  <OptionTitle>Split by gender:</OptionTitle>
+                  <YesCont selected={this.state.byGender === "yes"} onClick={() => this.setState({byGender: "yes"})}>
+                    <YesLogo src="/tick.png"></YesLogo>
+                  </YesCont>
+                  <NoCont selected={this.state.byGender === "no"} onClick={() => this.setState({byGender: "no"})} >
+                    <NoLogo src="/cross.png"></NoLogo>
+                  </NoCont>
                 </OptionRow>
-              </Option>
-              <Option>
-                <Notice className='anton'>Press the hand icon to choose which students you would prefer not to be put in the same group as a particular student</Notice>
-              </Option>
               <>
               {this.state.chooseByNumGroups ?
-                <Option>
-                  <OptionTitle>Number of groups:</OptionTitle>
+                <>
                     <OptionRow>
+                    <OptionTitle>Number of groups:</OptionTitle>
                       <NumGroups name="numGroups" value={this.state.numGroups} onChange={this.handleChange} type="text"></NumGroups>
+                      <GroupButton className='anton' onClick={() => this.setState({chooseByNumGroups: false})}>Choose by number of groups</GroupButton>
                     </OptionRow>
-                    <button onClick={() => this.setState({chooseByNumGroups: false})}>Choose by number per group</button>
-                </Option> :
-                <Option>
-                <OptionTitle>Members per group:</OptionTitle>
+                </> :
+                <>
                   <OptionRow>
+                    <OptionTitle>Members per group:</OptionTitle>
                     <NumGroups name="numGroups" value={this.state.numGroups} onChange={this.handleChange} type="text"></NumGroups>
+                    <GroupButton className='anton' onClick={() => this.setState({chooseByNumGroups: true})}>Choose by members per group</GroupButton>
                   </OptionRow>
-                  <button onClick={() => this.setState({chooseByNumGroups: true})}>Choose by number per group</button>
-              </Option>
+              </>
                 }
               </>
               </Column>
             </Row>
+            <div style={{marginTop: "20px"}}></div>
             <Button className='anton' onClick={this.state.byGender === "yes" ? () => this.makeGroupsByGender() : () => this.makeGroups()}>Make Groups</Button>
             </>
           : 

@@ -41,15 +41,6 @@ export const GenderCont = styled.div `
     flex-direction: row;
 `
 
-export const Option = styled.div `
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 30px;
-`
-
-export const OptionTitle = styled.h4 `
-    
-`
 
 export const OptionLabel = styled.label `
 `
@@ -59,6 +50,7 @@ export const Notice = styled.label `
     margin: auto;
     background-color: #5bccf6;
     font-size: 1.2rem;
+    border: solid;
     border-radius: 2rem;
     padding: 10px;
 `
@@ -83,6 +75,44 @@ export const ToAvoidLogo = styled.img `
     line-height: 1;
 ` 
 
+export const YesCont = styled.a `
+    border-radius: 60%;
+    border: solid;
+    width: 30%;
+    margin: 5px;
+    background-color: ${({selected}) => selected ? '#39e600' : '#fcde67'};
+    &:hover {
+        background-color: #39e600;
+    }
+`
+
+export const YesLogo = styled.img `
+    height: 80%;
+    padding-top: 5%;
+    width: 80%;
+    vertical-align: middle;
+    margin: auto;
+`
+
+export const NoCont = styled.a `
+    border-radius: 60%;
+    border: solid;
+    margin: 5px;
+    width: 30%;
+    background-color: ${({selected}) => selected ? '#ff3333' : '#fcde67'};
+    &:hover {
+        background-color: #ff3333;
+    }
+`
+
+export const NoLogo = styled.img `
+    height: 80%;
+    padding-top: 5%;
+    width: 80%;
+    vertical-align: middle;
+    margin: auto;
+`
+
 export const AvoidStudent = styled.button `
     padding: 10px;
     margin-bottom: 5px;
@@ -106,13 +136,6 @@ export const AvoidCont = styled.div `
 `
 
 
-export const NumGroups = styled.input `
-    width: 30%;
-    height: 40px;
-    font-size: xx-large;
-    margin: auto;
-    text-align: center;
-`
 
 export const GenderLogo = styled.img `
     height: 80%;
@@ -142,7 +165,7 @@ export const TextBox = styled.textarea `
 `
 
 export const Title = styled.h1 `
-    margin-bottom: 50px;
+    margin-bottom: 20px;
 `
 
 export const Button = styled.button `
@@ -168,7 +191,25 @@ export const Row = styled.div `
 export const OptionRow = styled.div `
     display: flex;
     flex-direction: row;
+    height: 100px;
     margin: auto;
+`
+
+export const GroupButton = styled.button `
+    margin: auto;
+    height: 65%;
+    width: 60%;   
+`
+
+export const NumGroups = styled.input `
+    width: 25%;
+    font-size: xx-large;
+    margin: 7%;
+    text-align: center;
+`
+
+export const OptionTitle = styled.h4 `
+    width: 30%;
 `
 
 export const Column = styled.div `
@@ -178,38 +219,40 @@ export const Column = styled.div `
     width: 45%;
 `
 
+
 export const Member = styled.div `
     display: flex;
-    padding: 10px 10px 10px 10px;
+    padding: 5px 5px 5px 5px;
     flex-direction: row;
     background-color: #fcde67;
     border-radius: 3rem;
     border: solid;
     margin: auto;
-    font-size: 1.5rem;
+    font-size: 1.1rem;
     display:table-cell;
 `
+
+
 
 export const Group = styled.div `
     margin: auto;
     padding: 20px;
     background-color: #5bccf6;
     visibility: ${({hide}) => hide ? 'hidden' : ''};
-    margin-bottom: 30px;
+    
     border-style: solid;
     border-radius: 1rem;
 `
 
 export const GroupName = styled.label `
-    margin: auto;
-    font-size: 2rem;
+    font-size: 1.5rem;
 `
 
 export const StudentCont = styled.div `
     display: flex;
     flex-wrap: wrap;
+    margin: auto;
     max-width: 600px;
-    margin-top: 15px;
 `
 
 export const Change = styled.a `
