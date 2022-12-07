@@ -8,8 +8,7 @@ import {changeGroupFunc, makeGroupsByGenderMemFunc, makeGroupsFunc, makeGroupsBy
 import './fonts.css';
 import jsPDF from 'jspdf';
 
-// Style "Choose by number per group" button
-// Style gender buttons 
+// Add error message to make sure everyone has been assigned a gender
 // Make it so that moving out of bounds makes a new group
 // Can add divisions to group or labels to certain members
 
@@ -20,7 +19,7 @@ class App extends React.Component {
       students: "",
       nameArray: ["Jack", "Jane", "Sarah", "Frank", "Keith", "Rachel", "Melvin"],
       studentInfo: [["Jack", "m", [""]], ["Jane", "f", []], ["Sarah", "f", [""]], ["Frank", "m", []], ["Keith", "m", []], ["Rachel", "f", []], ["Melvin", "m", []]],
-      step: 3,
+      step: 2,
       groups: [["Melvin", "Jane", "Sarah", "Frank"], ["Rachel", "Keith", "Jack"]],
       byGender: "no",
       numGroups: 2,
@@ -69,7 +68,7 @@ class App extends React.Component {
     else {
       toAvoidCopy.push(name)
     }
-    this.setState({toAvoid: toAvoidCopy})
+    this.setState({toAvoid: toAvoidCopy, errorCode: ""})
   }
 
   updateAvoidInfo = () => { // update student info using current avoid list
@@ -82,22 +81,22 @@ class App extends React.Component {
         })
       }
     })
-    this.setState({studentInfo: studentInfoCopy, step: 2})
+    this.setState({studentInfo: studentInfoCopy, step: 2, errorCode: ""})
   } 
 
   loadAvoidPage = (name) => { // show avoid list page
     this.state.studentInfo.forEach((student, index) => {
       if(student[0] === name) {
-        this.setState({toAvoid: student[2]})
+        this.setState({toAvoid: student[2], errorCode: ""})
       }
     })
     if(name === this.state.currentStudent) {
-      this.setState({step: 4})
+      this.setState({step: 4, errorCode: ""})
     }
     else {
       this.state.studentInfo.forEach((student, index) => {
         if(student[0] === name) {
-          this.setState({step: 4, currentStudent: name, toAvoid: student[2]})
+          this.setState({step: 4, currentStudent: name, toAvoid: student[2], errorCode: ""})
         }
       })
     }
@@ -118,7 +117,7 @@ class App extends React.Component {
         studentNames.forEach((name) => {
         output.push([name, "", ""])
       })
-      this.setState({step: 2, studentInfo: output, 
+      this.setState({step: 2, studentInfo: output, errorCode: "",
         numGroups: (Math.round(studentNames.length / 3)),
         nameArray: studentNames})
       }
@@ -153,26 +152,35 @@ class App extends React.Component {
     while (!this.checkGroups(output)) {
       this.makeGroups()
     }
-    this.setState({groups: output, step: 3})
+    this.setState({groups: output, step: 3, errorCode: ""})
   }
 
   makeGroupsByGender = () => {
-    let output = []
-    if(this.state.chooseByNumGroups) {
-      output = makeGroupsByGenderFunc(this.state.numGroups, this.state.studentInfo)
+    let success = true
+    this.state.studentInfo.forEach((student) => { // if no gender assigned
+      if(student[1].length === 0) {
+        this.setState({error: "Please assign a gender to each group member or change the 'Split by gender' option", errorCode: "gender"})
+        success = false
+      }
+    })
+    if(success) {
+      let output = []
+      if(this.state.chooseByNumGroups) {
+        output = makeGroupsByGenderFunc(this.state.numGroups, this.state.studentInfo)
+      }
+      else {
+        output = makeGroupsByGenderMemFunc(this.state.numGroups, this.state.studentInfo)
+      }
+        while (!this.checkGroups(output)) {
+        this.makeGroupsByGender()
+      }
+      this.setState({groups: output, step: 3, errorCode: ""})
     }
-    else {
-      output = makeGroupsByGenderMemFunc(this.state.numGroups, this.state.studentInfo)
-    }
-      while (!this.checkGroups(output)) {
-      this.makeGroupsByGender()
-    }
-    this.setState({groups: output, step: 3})
   }
 
   switchStudents = (name, groupNum) => {
     if(this.state.student1[0].length === 0) {
-      this.setState({student1: [name, groupNum]})
+      this.setState({student1: [name, groupNum], errorCode: ""})
     }
     else {
       let groupsCopy = this.state.groups
@@ -184,7 +192,7 @@ class App extends React.Component {
       const student2Pos = groupsCopy[student2Group].indexOf(student2Name)
       groupsCopy[student1Group][student1Pos] = student2Name
       groupsCopy[student2Group][student2Pos] = student1Name
-      this.setState({groups: groupsCopy, student1: ["", 0]})
+      this.setState({groups: groupsCopy, student1: ["", 0], errorCode: ""})
     }
   }
 
@@ -196,12 +204,12 @@ class App extends React.Component {
     else {
       studentInfoCopy[key][1] = ""
     }
-    this.setState({studentInfo: studentInfoCopy})
+    this.setState({studentInfo: studentInfoCopy, errorCode: ""})
   }
 
   changeGroup = (direction, student, groupNum) => {
     let newGroups = changeGroupFunc(direction, student, groupNum, this.state.groups)
-    this.setState({groups: newGroups, student1: ["", 0]})
+    this.setState({groups: newGroups, student1: ["", 0], errorCode: ""})
   } 
 
   
@@ -251,7 +259,8 @@ class App extends React.Component {
 
   mapAvoidList = () => {
     return this.state.toAvoid.map((student) => 
-      <p>{student}</p>
+      <label className='anton'><br/>{student}</label>
+      
     )
   }
   
@@ -259,7 +268,7 @@ class App extends React.Component {
   
   return (
       <Main>
-        <Title className='title'>Group Picker</Title>
+        <Title className='zen'>Group Picker</Title>
         {this.state.step === 1 ?
         <Row>
           <TextBox name="students" value={this.state.students} onChange={this.handleChange}/>
@@ -276,13 +285,17 @@ class App extends React.Component {
             <Row>
               <Column>{this.mapStudents()}</Column>
               <Column>
-              <Notice className='anton'>Press the hand icon to choose which students you would prefer not to be put in the same group as a particular student</Notice>
+              {this.state.errorCode !== "gender" ?
+                <Notice className='zen'>Press the hand icon to choose which students you would prefer not to be put in the same group as a particular student</Notice>
+              :
+                <Notice error className='zen'>{this.state.error}</Notice>
+              }
                 <OptionRow>
-                  <OptionTitle>Split by gender:</OptionTitle>
-                  <YesCont selected={this.state.byGender === "yes"} onClick={() => this.setState({byGender: "yes"})}>
+                  <OptionTitle className='zen'>Split by gender:</OptionTitle>
+                  <YesCont selected={this.state.byGender === "yes"} onClick={() => this.setState({byGender: "yes", errorCode: ""})}>
                     <YesLogo src="/tick.png"></YesLogo>
                   </YesCont>
-                  <NoCont selected={this.state.byGender === "no"} onClick={() => this.setState({byGender: "no"})} >
+                  <NoCont selected={this.state.byGender === "no"} onClick={() => this.setState({byGender: "no", errorCode: ""})} >
                     <NoLogo src="/cross.png"></NoLogo>
                   </NoCont>
                 </OptionRow>
@@ -290,16 +303,16 @@ class App extends React.Component {
               {this.state.chooseByNumGroups ?
                 <>
                     <OptionRow>
-                    <OptionTitle>Number of groups:</OptionTitle>
+                    <OptionTitle className='zen'>Number of groups:</OptionTitle>
                       <NumGroups name="numGroups" value={this.state.numGroups} onChange={this.handleChange} type="text"></NumGroups>
-                      <GroupButton className='anton' onClick={() => this.setState({chooseByNumGroups: false})}>Choose by number of groups</GroupButton>
+                      <GroupButton className='zen' onClick={() => this.setState({chooseByNumGroups: false, errorCode: ""})}>Choose by members per group</GroupButton>
                     </OptionRow>
                 </> :
                 <>
                   <OptionRow>
                     <OptionTitle>Members per group:</OptionTitle>
                     <NumGroups name="numGroups" value={this.state.numGroups} onChange={this.handleChange} type="text"></NumGroups>
-                    <GroupButton className='anton' onClick={() => this.setState({chooseByNumGroups: true})}>Choose by members per group</GroupButton>
+                    <GroupButton className='anton' onClick={() => this.setState({chooseByNumGroups: true, errorCode: ""})}>Choose by number of groups</GroupButton>
                   </OptionRow>
               </>
                 }
@@ -317,19 +330,25 @@ class App extends React.Component {
               {this.mapGroups()}
               </div>
               <div style={{'display': 'flex', 'flexDirection': 'row'}}>
-                <Button className='anton' onClick={() => this.setState({step: 2})}>Back</Button>
+                <Button className='anton' onClick={() => this.setState({step: 2, errorCode: ""})}>Back</Button>
                 <Button className='anton' onClick={() => this.doCapture()}>Save as PDF</Button>
               </div>
             </>
             :
             <>
-            <h3>Choose students to be avoided by {this.state.currentStudent}</h3>
+            <label style={{marginBottom: "3%"}} className='zen'>Choose students to be avoided by {this.state.currentStudent}:</label>
               <AvoidCont>
               {this.mapStudentsToAvoid()}
               </AvoidCont>
-              <h3>
-                Currently avoiding: {this.mapAvoidList()}
-              </h3>
+              {this.state.toAvoid.length > 0 ?
+                <label style={{marginTop: "3%", marginBottom: "3px"}} className='zen'>
+                  Currently avoiding: {this.mapAvoidList()}
+                </label>
+                :
+                <label style={{marginTop: "3%", marginBottom: "3px"}} className='zen'>
+                  Currently avoiding nobody
+                </label>
+              }
               <Button className='anton' onClick={() => this.updateAvoidInfo()}>
                 Confirm
               </Button>

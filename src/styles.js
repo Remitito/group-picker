@@ -48,7 +48,10 @@ export const OptionLabel = styled.label `
 export const Notice = styled.label `
     max-width: 80%;
     margin: auto;
-    background-color: #5bccf6;
+    font-size: 2rem;
+    margin-bottom: 5%;
+    background-color: ${({error}) => error ? 'red' : '#5bccf6'};
+    color: ${({error}) => error ? 'white' : ''};
     font-size: 1.2rem;
     border: solid;
     border-radius: 2rem;

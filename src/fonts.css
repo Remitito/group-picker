@@ -1,7 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Abyssinica+SIL&family=Anton&family=Nerko+One&family=Rubik&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Abyssinica+SIL&family=Anton&family=Nerko+One&family=Playfair+Display&family=Rubik&family=Zen+Dots&display=swap');
 .title {
     font-family: 'Abyssinica SIL', serif;
+}
+
+.zen {
+    font-family: 'Zen Dots', cursive;
+}
+
+.playfair {
+    font-family: 'Playfair Display', serif;
 }
 
 .rubik {
