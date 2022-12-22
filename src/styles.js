@@ -8,20 +8,19 @@ export const Main = styled.div `
 `
 
 export const Info = styled.div `
-    font-size: larger;
+    margin-top: 40px;
+    font-size: large;
     background-color: #5bccf6;
-    padding: 10px;
-    border: solid;
+    padding: 20px;
     border-radius: 1rem;
-    margin-bottom: 5px;
+    margin-bottom: 20px;
 `
 
 export const InfoSection = styled.label `
     background-color: ${({selected}) => selected ? '#fcde67' : '#5bccf6'};
-    border-radius: 1rem;
     padding: 10px;
-    font-weight: ${({selected}) => selected ? 'bolder' : ''};
-    font-size: ${({selected}) => selected ? '1.3rem' : ''};
+    border-radius: 1rem;
+
 `
 
 export const Student = styled.div `
@@ -30,6 +29,7 @@ export const Student = styled.div `
     line-height: 2;
     flex-direction: row;
     border-style: solid;
+    border-width: 2px;
     padding: 5px;
     margin-bottom: 2px;
     border-radius: 1rem;
@@ -37,35 +37,23 @@ export const Student = styled.div `
 
 export const GenderCont = styled.div `
     display: flex;
-    width: 50%;
+    width: 30%;
     flex-direction: row;
 `
 
 
-export const OptionLabel = styled.label `
-`
-
 export const Notice = styled.label `
     max-width: 80%;
-    margin: auto;
-    font-size: 2rem;
-    margin-bottom: 5%;
     background-color: ${({error}) => error ? 'red' : '#5bccf6'};
     color: ${({error}) => error ? 'white' : ''};
-    font-size: 1.2rem;
-    border: solid;
+    font-size: 1rem;
     border-radius: 2rem;
     padding: 10px;
-`
-
-export const RadioButton = styled.input `
-
 `
 
 export const ToAvoid = styled.a `
     border-radius: 50%;
     height: 40px;
-    width: 40px;
     background-color: ${({selected}) => selected ? '#5bccf6' : '#fcde67'};
     &:hover {
         background-color: #ef9273;
@@ -117,13 +105,14 @@ export const NoLogo = styled.img `
 `
 
 export const AvoidStudent = styled.button `
-    padding: 10px;
-    margin-bottom: 5px;
+    padding: 15px;
+    margin: auto;
+    margin-bottom: 15px;
     width: 200px;
     font-size: 15px;
     border: solid;
     border-radius: 2rem;
-    border-width: 5px;
+    border-width: 2px;
     border-color: black;
     background-color: ${({selected}) => selected ? '#5bccf6' : '#fcde67'};
     &:hover {
@@ -135,7 +124,7 @@ export const AvoidCont = styled.div `
     display: flex;
     flex-wrap: wrap;
     margin: auto;
-    max-width: 400px;
+    max-width: 430px;
 `
 
 
@@ -157,6 +146,7 @@ export const Gender = styled.a `
 `
 export const Name = styled.label `
     width: 40%;
+    font-weight: bolder;
 `
 
 
@@ -173,11 +163,10 @@ export const Title = styled.h1 `
 
 export const Button = styled.button `
     width: 40%;
-    margin: auto;
     margin-top: 10px;
+    margin: auto;
     background-color: #5bccf6;
-    border: solid;
-    font-size: 1.5rem;
+    font-size: ${({size}) => size ? size : '1.5rem'};
     height: 70px;
     border-radius: 2rem;
     &:hover {
@@ -185,34 +174,39 @@ export const Button = styled.button `
     }
 `
 
+
 export const Row = styled.div `
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 `
 
-export const OptionRow = styled.div `
-    display: flex;
-    flex-direction: row;
-    height: 100px;
-    margin: auto;
-`
-
 export const GroupButton = styled.button `
-    margin: auto;
-    height: 65%;
-    width: 60%;   
+    height: 70%;
+    width: 70%;
+    border-radius: 1rem;
+    background-color: #5bccf6;
+    border-radius: 2rem;
+    &:hover {
+        background-color: #ef9273;
+    }
 `
 
 export const NumGroups = styled.input `
-    width: 25%;
+    width: 20%;
     font-size: xx-large;
     margin: 7%;
     text-align: center;
 `
 
 export const OptionTitle = styled.h4 `
-    width: 30%;
+    width: 40%;
+`
+
+export const OptionRow = styled.div `
+    display: flex;
+    flex-direction: row;
+    height: 80px;
 `
 
 export const Column = styled.div `
@@ -230,6 +224,7 @@ export const Member = styled.div `
     background-color: #fcde67;
     border-radius: 3rem;
     border: solid;
+    border-width: 2px;
     margin: auto;
     font-size: 1.1rem;
     display:table-cell;
@@ -240,9 +235,10 @@ export const Member = styled.div `
 export const Group = styled.div `
     margin: auto;
     padding: 20px;
+    border-width: 2px;
+    margin-bottom: 5px;
     background-color: #5bccf6;
     visibility: ${({hide}) => hide ? 'hidden' : ''};
-    
     border-style: solid;
     border-radius: 1rem;
 `
@@ -276,3 +272,5 @@ export const ChangeCont = styled.div `
     display: flex;
     flex-direction: row;
 `
+
+

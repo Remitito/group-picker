@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Abyssinica+SIL&family=Anton&family=Nerko+One&family=Playfair+Display&family=Rubik&family=Zen+Dots&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Abyssinica+SIL&family=Anton&family=Nerko+One&family=Open+Sans&family=Playfair+Display&family=Rubik&family=Zen+Dots&display=swap');
+
 .title {
     font-family: 'Abyssinica SIL', serif;
 }
@@ -21,4 +22,8 @@
 
 .nerko {
     font-family: 'Nerko One', cursive;
+}
+
+.openSans {
+    font-family: 'Open Sans', sans-serif;
 }

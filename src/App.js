@@ -1,16 +1,17 @@
 import {Main, Info, TextBox, Button, Column, Name, OptionTitle, NumGroups, GroupName, Notice,
   Row, Student, Gender, GenderCont, GroupButton, ToAvoidLogo, Title, ChangeLogo, ToAvoid, ChangeCont, OptionLabel, Change, Member, GenderLogo,
-  StudentCont, OptionRow, AvoidStudent, YesLogo, YesCont, NoLogo, NoCont, AvoidCont, InfoSection, Group, RadioButton} from './styles'
+  StudentCont, OptionRow, AvoidStudent, AvoidCont, InfoSection, Group} from './styles'
 import React from "react";
 import html2canvas from 'html2canvas';
-import jspdf from 'jspdf'
 import {changeGroupFunc, makeGroupsByGenderMemFunc, makeGroupsFunc, makeGroupsByGenderFunc} from './GroupHandling.js';
 import './fonts.css';
+import './index.css'
 import jsPDF from 'jspdf';
 
-// Add error message to make sure everyone has been assigned a gender
-// Make it so that moving out of bounds makes a new group
-// Can add divisions to group or labels to certain members
+// Add the back button to the avoid list page 
+// Improve change to by members per group part 
+// Add a NO students thing to 2nd and group making page and avoid list 
+// Add error handling if group cannot be made 
 
 class App extends React.Component {
   constructor() {
@@ -21,7 +22,7 @@ class App extends React.Component {
       studentInfo: [["Jack", "m", [""]], ["Jane", "f", []], ["Sarah", "f", [""]], ["Frank", "m", []], ["Keith", "m", []], ["Rachel", "f", []], ["Melvin", "m", []]],
       step: 2,
       groups: [["Melvin", "Jane", "Sarah", "Frank"], ["Rachel", "Keith", "Jack"]],
-      byGender: "no",
+      byGender: false,
       numGroups: 2,
       student1: ["", 0],
       error: "",
@@ -37,6 +38,10 @@ class App extends React.Component {
     let name = e.target.name
     let value = e.target.value
     this.setState({[name]: value, errorCode: ""})
+  }
+
+  changeByGender = (e) => {
+    this.setState({byGender: e.target.checked})
   }
 
   doCapture = () => {
@@ -103,11 +108,11 @@ class App extends React.Component {
   }
 
   addStudents = () => { // turn initial name list into student name array and student info array
+    if(this.state.students.length === 0) {
+      this.setState({step: 2})
+      return
+    }
     let studentNames = this.state.students.split(/\r?\n/)
-      if(studentNames.length < 4) {
-        this.setState({error: "Please enter at least 4 names", errorCode: "4"})
-        return
-      }
       if(studentNames.length !== new Set(studentNames).size) {
         this.setState({error: "Please ensure all names are different", errorCode: "unique"})
         return
@@ -139,6 +144,16 @@ class App extends React.Component {
       })
     })
     return true
+  }
+
+  removeStudent = (studentToRemove) => {
+    let newArray = this.state.studentInfo
+    this.state.studentInfo.forEach((student, index) => {
+      if(student[0] === studentToRemove) {
+        newArray.splice(index, 1)
+      }
+    })
+    this.setState({studentInfo: newArray})
   }
 
   makeGroups = () => {
@@ -216,13 +231,16 @@ class App extends React.Component {
   mapStudents = () => { 
   return this.state.studentInfo.map((student, key) => 
   <Student>
-    <Name className='anton'>{student[0]}</Name>
+    <Name className='openSans'>{student[0]}</Name>
     <GenderCont>
       <Gender selected={this.state.studentInfo[key][1] === "m"} gender="m" name={key} onClick={() => this.changeGender(key, "m")} value="m"><GenderLogo src='/male.png'/></Gender>
       <Gender selected={this.state.studentInfo[key][1] === "f"} gender="f" name={key} onClick={() => this.changeGender(key, "f")} value="f"><GenderLogo src='/female.png'/></Gender>
     </GenderCont>
-    <ToAvoid className='anton' onClick={() => this.loadAvoidPage(student[0])}>
+    <ToAvoid className='openSans' onClick={() => this.loadAvoidPage(student[0])}>
       <ToAvoidLogo src="/avoid.png" />
+    </ToAvoid>
+    <ToAvoid className='openSans' onClick={() => this.removeStudent(student[0])}>
+      <ToAvoidLogo src="/bin.png" />
     </ToAvoid>
   </Student>)
   }
@@ -231,7 +249,7 @@ class App extends React.Component {
     return this.state.nameArray.map ((student) => 
     <>
     {this.state.currentStudent !== student ?
-      <AvoidStudent className='anton' selected={this.state.toAvoid.includes(student)} onClick={() => this.addToAvoid(student)}>Avoid {student}</AvoidStudent>
+      <AvoidStudent className='openSans' selected={this.state.toAvoid.includes(student)} onClick={() => this.addToAvoid(student)}>Avoid {student}</AvoidStudent>
     : <></>}
     </>
     )
@@ -243,7 +261,7 @@ class App extends React.Component {
         <GroupName className='nerko'>Group {groupNum + 1}</GroupName>
           <StudentCont>
             {group.map((student) => 
-            <Member className='anton'>{student}
+            <Member className='openSans'>{student}
               <ChangeCont>
                 <Change value={student} onClick={() => this.switchStudents(student, groupNum)}>
                   <ChangeLogo src={'/change.png'} background={student === this.state.student1[0]}/></Change>
@@ -259,7 +277,7 @@ class App extends React.Component {
 
   mapAvoidList = () => {
     return this.state.toAvoid.map((student) => 
-      <label className='anton'><br/>{student}</label>
+      <label className='openSans'><br/>{student}</label>
       
     )
   }
@@ -268,14 +286,13 @@ class App extends React.Component {
   
   return (
       <Main>
-        <Title className='zen'>Group Picker</Title>
+        <Title className='openSans'>Group Picker</Title>
         {this.state.step === 1 ?
         <Row>
-          <TextBox name="students" value={this.state.students} onChange={this.handleChange}/>
+          <TextBox placeholder="Enter student names here" name="students" value={this.state.students} onChange={this.handleChange}/>
           <Column>
-            <Info className='rubik'>Enter names then press confirm</Info>
-            <Button className='anton' onClick={this.addStudents}>Confirm</Button>
-            <Info className='rubik'><InfoSection>1 name per line</InfoSection><p></p><InfoSection selected={this.state.errorCode === "4"}>Minimum of 4 names</InfoSection><p></p><InfoSection selected={this.state.errorCode === "unique"}>No repeated names</InfoSection></Info>
+            <Info className='openSans'><InfoSection selected={this.state.errorCode === "unique" ? true : false}>No repeated names</InfoSection><p></p> One student per line</Info>
+            <Button className='openSans' onClick={this.addStudents}>Confirm</Button>
           </Column>
         </Row>
         :
@@ -283,73 +300,82 @@ class App extends React.Component {
         {this.state.step === 2 ?
         <>
             <Row>
-              <Column>{this.mapStudents()}</Column>
+              <Column>{this.mapStudents()}
+              <Row>
+                <Button size="1rem" onClick={() => {this.setState({studentInfo: [], nameArray: [], groups: [], currentStudent: "", students: ""})}}>Clear</Button>
+                <Button size="1rem" onClick={() => {this.setState({step: 1})}}>Add Students</Button>
+                <Button size="1rem" className='openSans' onClick={this.state.byGender === true ? () => this.makeGroupsByGender() : () => this.makeGroups()}>Make Groups</Button>
+              </Row>
+              </Column>
               <Column>
               {this.state.errorCode !== "gender" ?
-                <Notice className='zen'>Press the hand icon to choose which students you would prefer not to be put in the same group as a particular student</Notice>
+                <Notice className='openSans'>Press the hand icon to choose which students you would prefer not to be put in the same group as a particular student</Notice>
               :
-                <Notice error className='zen'>{this.state.error}</Notice>
+                <Notice error className='openSans'>{this.state.error}</Notice>
               }
                 <OptionRow>
-                  <OptionTitle className='zen'>Split by gender:</OptionTitle>
-                  <YesCont selected={this.state.byGender === "yes"} onClick={() => this.setState({byGender: "yes", errorCode: ""})}>
-                    <YesLogo src="/tick.png"></YesLogo>
-                  </YesCont>
-                  <NoCont selected={this.state.byGender === "no"} onClick={() => this.setState({byGender: "no", errorCode: ""})} >
-                    <NoLogo src="/cross.png"></NoLogo>
-                  </NoCont>
+                  <OptionTitle className='openSans'>Split by gender:</OptionTitle>
+                  <label className="switch">
+                    <input checked={this.state.byGender} 
+                    onClick={this.changeByGender} type="checkbox"/>
+                    <span className="slider round"></span>
+                  </label>
                 </OptionRow>
               <>
               {this.state.chooseByNumGroups ?
                 <>
                     <OptionRow>
-                    <OptionTitle className='zen'>Number of groups:</OptionTitle>
+                    <OptionTitle className='openSans'>Number of groups:</OptionTitle>
                       <NumGroups name="numGroups" value={this.state.numGroups} onChange={this.handleChange} type="text"></NumGroups>
-                      <GroupButton className='zen' onClick={() => this.setState({chooseByNumGroups: false, errorCode: ""})}>Choose by members per group</GroupButton>
+                    </OptionRow>
+                    <OptionRow>
+                      <GroupButton className='openSans' onClick={() => this.setState({chooseByNumGroups: false, errorCode: ""})}>Choose by members per group</GroupButton>
                     </OptionRow>
                 </> :
                 <>
                   <OptionRow>
-                    <OptionTitle>Members per group:</OptionTitle>
+                    <OptionTitle className='openSans'>Members per group:</OptionTitle>
                     <NumGroups name="numGroups" value={this.state.numGroups} onChange={this.handleChange} type="text"></NumGroups>
-                    <GroupButton className='anton' onClick={() => this.setState({chooseByNumGroups: true, errorCode: ""})}>Choose by number of groups</GroupButton>
                   </OptionRow>
+                    <OptionRow>
+                      <GroupButton className='openSans' onClick={() => this.setState({chooseByNumGroups: true, errorCode: ""})}>Choose by number of groups</GroupButton>
+                    </OptionRow>
               </>
                 }
               </>
               </Column>
             </Row>
-            <div style={{marginTop: "20px"}}></div>
-            <Button className='anton' onClick={this.state.byGender === "yes" ? () => this.makeGroupsByGender() : () => this.makeGroups()}>Make Groups</Button>
             </>
           : 
           <>
             {this.state.step === 3 ?
             <>
               <div style={{"backgroundColor": "#fcde67"}} id="groupCont">
-              {this.mapGroups()}
+              {this.state.groups.length === 0 ? <><label>Hi</label></> : <>
+              {this.mapGroups()}</>
+            }
               </div>
               <div style={{'display': 'flex', 'flexDirection': 'row'}}>
-                <Button className='anton' onClick={() => this.setState({step: 2, errorCode: ""})}>Back</Button>
-                <Button className='anton' onClick={() => this.doCapture()}>Save as PDF</Button>
+                <Button className='openSans' onClick={() => this.setState({step: 2, errorCode: ""})}>Back</Button>
+                <Button className='openSans' onClick={() => this.doCapture()}>Save as PDF</Button>
               </div>
             </>
             :
             <>
-            <label style={{marginBottom: "3%"}} className='zen'>Choose students to be avoided by {this.state.currentStudent}:</label>
+            <label style={{marginBottom: "3%"}} className='openSans'>Choose students to be avoided by {this.state.currentStudent}:</label>
               <AvoidCont>
               {this.mapStudentsToAvoid()}
               </AvoidCont>
               {this.state.toAvoid.length > 0 ?
-                <label style={{marginTop: "3%", marginBottom: "3px"}} className='zen'>
+                <label style={{marginTop: "3%", marginBottom: "3px"}} className='openSans'>
                   Currently avoiding: {this.mapAvoidList()}
                 </label>
                 :
-                <label style={{marginTop: "3%", marginBottom: "3px"}} className='zen'>
+                <label style={{marginTop: "3%", marginBottom: "3px"}} className='openSans'>
                   Currently avoiding nobody
                 </label>
               }
-              <Button className='anton' onClick={() => this.updateAvoidInfo()}>
+              <Button className='openSans' onClick={() => this.updateAvoidInfo()}>
                 Confirm
               </Button>
             </>}
