@@ -8,10 +8,6 @@ import './fonts.css';
 import './index.css'
 import jsPDF from 'jspdf';
 
-// Adding new students doesnt work
-//  
-// Add a NO students thing to 2nd and group making page and avoid list 
-// Add error handling if group cannot be made 
 
 class App extends React.Component {
   constructor() {
@@ -244,14 +240,14 @@ class App extends React.Component {
   <Student>
     <Name className='openSans'>{student[0]}</Name>
     <GenderCont>
-      <Gender selected={this.state.studentInfo[key][1] === "m"} gender="m" name={key} onClick={() => this.changeGender(key, "m")} value="m"><GenderLogo src='/male.png'/></Gender>
-      <Gender selected={this.state.studentInfo[key][1] === "f"} gender="f" name={key} onClick={() => this.changeGender(key, "f")} value="f"><GenderLogo src='/female.png'/></Gender>
+      <Gender selected={this.state.studentInfo[key][1] === "m"} gender="m" name={key} onClick={() => this.changeGender(key, "m")} value="m"><GenderLogo src={require('./images//male.png')}/></Gender>
+      <Gender selected={this.state.studentInfo[key][1] === "f"} gender="f" name={key} onClick={() => this.changeGender(key, "f")} value="f"><GenderLogo src={require('./images//female.png')}/></Gender>
     </GenderCont>
     <ToAvoid className='openSans' onClick={() => this.loadAvoidPage(student[0])}>
-      <ToAvoidLogo src="/avoid.png" />
+      <ToAvoidLogo src={require("./images/avoid.png")} />
     </ToAvoid>
     <ToAvoid className='openSans' onClick={() => this.removeStudent(student[0])}>
-      <ToAvoidLogo src="/bin.png" />
+      <ToAvoidLogo src={require("./images/bin.png")} />
     </ToAvoid>
   </Student>)
   }
@@ -275,9 +271,9 @@ class App extends React.Component {
             <Member className='openSans'>{student}
               <ChangeCont>
                 <Change value={student} onClick={() => this.switchStudents(student, groupNum)}>
-                  <ChangeLogo src={'/change.png'} background={student === this.state.student1[0]}/></Change>
-                <Change value={student} onClick={() => this.changeGroup("up", student, groupNum)}><ChangeLogo src={'/upArrow.png'}/></Change>
-                <Change value={student} onClick={() => this.changeGroup("down", student, groupNum)}><ChangeLogo src={'/downArrow.png'}/></Change>
+                  <ChangeLogo src={require('./images//change.png')} background={student === this.state.student1[0]}/></Change>
+                <Change value={student} onClick={() => this.changeGroup("up", student, groupNum)}><ChangeLogo src={require('./images//upArrow.png')}/></Change>
+                <Change value={student} onClick={() => this.changeGroup("down", student, groupNum)}><ChangeLogo src={require('./images//downArrow.png')}/></Change>
               </ChangeCont>
             </Member>
             )}
