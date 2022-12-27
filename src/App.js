@@ -342,7 +342,7 @@ class App extends React.Component {
                 <>
                     <OptionRow>
                     <OptionTitle className='openSans'>Number of groups:</OptionTitle>
-                      <NumGroups name="numGroups" value={this.state.numGroups} onChange={this.handleChange} type="text"></NumGroups>
+                      <NumGroups name="numGroups" type="number" min="1" value={this.state.numGroups} onChange={this.handleChange}></NumGroups>
                     </OptionRow>
                     <OptionRow>
                       <GroupButton className='openSans' onClick={() => this.setState({chooseByNumGroups: false, errorCode: ""})}>Choose by members per group</GroupButton>
@@ -351,7 +351,7 @@ class App extends React.Component {
                 <>
                   <OptionRow>
                     <OptionTitle className='openSans'>Members per group:</OptionTitle>
-                    <NumGroups name="numGroups" value={this.state.numGroups} onChange={this.handleChange} type="text"></NumGroups>
+                    <NumGroups name="numGroups" type="number" min="1" value={this.state.numGroups} onChange={this.handleChange}></NumGroups>
                   </OptionRow>
                     <OptionRow>
                       <GroupButton className='openSans' onClick={() => this.setState({chooseByNumGroups: true, errorCode: ""})}>Choose by number of groups</GroupButton>

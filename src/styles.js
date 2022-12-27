@@ -226,6 +226,7 @@ export const Member = styled.div `
     border: solid;
     border-width: 2px;
     margin: auto;
+    margin-bottom: 10px;
     font-size: 1.1rem;
     display:table-cell;
 `
