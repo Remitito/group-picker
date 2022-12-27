@@ -8,8 +8,8 @@ import './fonts.css';
 import './index.css'
 import jsPDF from 'jspdf';
 
-// Add the back button to the avoid list page 
-// Improve change to by members per group part 
+// Adding new students doesnt work
+//  
 // Add a NO students thing to 2nd and group making page and avoid list 
 // Add error handling if group cannot be made 
 
@@ -113,20 +113,26 @@ class App extends React.Component {
       return
     }
     let studentNames = this.state.students.split(/\r?\n/)
-      if(studentNames.length !== new Set(studentNames).size) {
+    if(studentNames.length !== new Set(studentNames).size) {
+      this.setState({error: "Please ensure all names are different", errorCode: "unique"})
+      return
+    }
+    for (let i = 0; i < studentNames.length; i++) {
+      if(this.state.nameArray.includes(studentNames[i])) {
         this.setState({error: "Please ensure all names are different", errorCode: "unique"})
         return
       }
-      else {
-        let output = []
-        studentNames.forEach((name) => {
-        output.push([name, "", ""])
-      })
-      this.setState({step: 2, studentInfo: output, errorCode: "",
-        numGroups: (Math.round(studentNames.length / 3)),
-        nameArray: studentNames})
-      }
+      let newStudentInfo = this.state.studentInfo
+      let newNameArray = this.state.nameArray
+      studentNames.forEach((name) => {
+        newStudentInfo.push([name, "", []])
+        newNameArray.push(name)
+    })
+    this.setState({step: 2, students: "", studentInfo: newStudentInfo, errorCode: "",
+      numGroups: (Math.round(studentNames.length / 3)),
+      nameArray: newNameArray})    
     }
+  }
 
   checkGroups = (groupList) => { // check group members arent on avoid list
     groupList.forEach((group, groupNum) => {
@@ -147,16 +153,21 @@ class App extends React.Component {
   }
 
   removeStudent = (studentToRemove) => {
-    let newArray = this.state.studentInfo
+    let newStudentInfo = this.state.studentInfo
+    let newStudents = this.state.students
+    let newNameArray = this.state.nameArray
     this.state.studentInfo.forEach((student, index) => {
       if(student[0] === studentToRemove) {
-        newArray.splice(index, 1)
+        newStudentInfo.splice(index, 1)
+        newStudents = newStudents.replace(`${studentToRemove}\n`, "")
+        newNameArray.splice(index, 1)
       }
     })
-    this.setState({studentInfo: newArray})
+    this.setState({students: newStudents, nameArray: newNameArray, studentInfo: newStudentInfo})
   }
 
   makeGroups = () => {
+    console.log(this.state.groups)
     let output = []
     if(this.state.chooseByNumGroups) { 
       output = makeGroupsFunc(this.state.numGroups, this.state.studentInfo, false)
@@ -281,6 +292,13 @@ class App extends React.Component {
       
     )
   }
+
+  clear = () => {
+    let emptyGroups = []
+    let emptyStudentInfo = []
+    let emptyNameArray = []
+    this.setState({studentInfo: emptyStudentInfo, nameArray: emptyNameArray, groups: emptyGroups, currentStudent: "", students: ""})
+  }
   
   render() {
   
@@ -289,9 +307,9 @@ class App extends React.Component {
         <Title className='openSans'>Group Picker</Title>
         {this.state.step === 1 ?
         <Row>
-          <TextBox placeholder="Enter student names here" name="students" value={this.state.students} onChange={this.handleChange}/>
+          <TextBox placeholder="Enter names here" name="students" value={this.state.students} onChange={this.handleChange}/>
           <Column>
-            <Info className='openSans'><InfoSection selected={this.state.errorCode === "unique" ? true : false}>No repeated names</InfoSection><p></p> One student per line</Info>
+            <Info className='openSans'><InfoSection selected={this.state.errorCode === "unique" ? true : false}>No repeated names</InfoSection><p></p> One name per line</Info>
             <Button className='openSans' onClick={this.addStudents}>Confirm</Button>
           </Column>
         </Row>
@@ -301,15 +319,17 @@ class App extends React.Component {
         <>
             <Row>
               <Column>{this.mapStudents()}
+              <Row style={{marginLeft: "5%"}}>{this.state.nameArray.length === 0 ? <Notice style={{margin: "auto", fontSize: "0.9rem", marginBottom: "5px"}} error>Add names to get started</Notice> : <></>}</Row>
               <Row>
-                <Button size="1rem" onClick={() => {this.setState({studentInfo: [], nameArray: [], groups: [], currentStudent: "", students: ""})}}>Clear</Button>
-                <Button size="1rem" onClick={() => {this.setState({step: 1})}}>Add Students</Button>
+                <Button size="1rem" onClick={() => {this.clear()}}>Clear</Button>
+                <Button size="1rem" onClick={() => {this.setState({step: 1})}}>Add Names</Button>
                 <Button size="1rem" className='openSans' onClick={this.state.byGender === true ? () => this.makeGroupsByGender() : () => this.makeGroups()}>Make Groups</Button>
               </Row>
+
               </Column>
               <Column>
               {this.state.errorCode !== "gender" ?
-                <Notice className='openSans'>Press the hand icon to choose which students you would prefer not to be put in the same group as a particular student</Notice>
+                <Notice className='openSans'>Press the hand icon to choose which people you would prefer not to be put in the same group as a particular person</Notice>
               :
                 <Notice error className='openSans'>{this.state.error}</Notice>
               }
@@ -351,7 +371,9 @@ class App extends React.Component {
             {this.state.step === 3 ?
             <>
               <div style={{"backgroundColor": "#fcde67"}} id="groupCont">
-              {this.state.groups.length === 0 ? <><label>Hi</label></> : <>
+              {this.state.groups[0].length === 0 ? <div style={{marginBottom: "20px"}}>
+                <Notice error className='openSans'>You need to add some names first!</Notice>
+                </div> : <>
               {this.mapGroups()}</>
             }
               </div>
@@ -362,7 +384,9 @@ class App extends React.Component {
             </>
             :
             <>
-            <label style={{marginBottom: "3%"}} className='openSans'>Choose students to be avoided by {this.state.currentStudent}:</label>
+            {this.state.nameArray.length > 1 ?
+              <label style={{marginBottom: "3%"}} className='openSans'>Choose people to be avoided by {this.state.currentStudent}:</label>
+              : <Notice error style={{margin: "auto"}} className='openSans'>{this.state.currentStudent} is the only member so there is nobody to avoid!</Notice>}
               <AvoidCont>
               {this.mapStudentsToAvoid()}
               </AvoidCont>
