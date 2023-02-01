@@ -299,6 +299,7 @@ class App extends React.Component {
   render() {
   
   return (
+    <div style={{margin: "auto", maxWidth: "500px", marginTop: "50px"}}>
       <Main>
         <Title className='openSans'>Group Picker</Title>
         {this.state.step === 1 ?
@@ -403,6 +404,7 @@ class App extends React.Component {
         </>
         }
       </Main>
+      </div>
     );
   }
   }
