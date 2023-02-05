@@ -315,14 +315,14 @@ class App extends React.Component {
         {this.state.step === 2 ?
         <>
             <Row>
-              <Column>{this.mapStudents()}
-              <Row style={{marginLeft: "5%"}}>{this.state.nameArray.length === 0 ? <Notice style={{margin: "auto", fontSize: "0.9rem", marginBottom: "5px"}} error>Add names to get started</Notice> : <></>}</Row>
-              <Row>
+              <Column>
+              <Row bottom="5px">
                 <Button size="1rem" onClick={() => {this.clear()}}>Clear</Button>
                 <Button size="1rem" onClick={() => {this.setState({step: 1})}}>Add Names</Button>
                 <Button size="1rem" className='openSans' onClick={this.state.byGender === true ? () => this.makeGroupsByGender() : () => this.makeGroups()}>Make Groups</Button>
               </Row>
-
+              {this.mapStudents()}
+              <Row style={{marginLeft: "5%"}}>{this.state.nameArray.length === 0 ? <Notice style={{margin: "auto", fontSize: "0.9rem", marginBottom: "5px"}} error>Add names to get started</Notice> : <></>}</Row>
               </Column>
               <Column>
               {this.state.errorCode !== "gender" ?
