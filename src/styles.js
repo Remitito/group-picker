@@ -169,8 +169,13 @@ export const Button = styled.button `
     font-size: ${({size}) => size ? size : '1.5rem'};
     height: 70px;
     border-radius: 2rem;
+    visibility: ${({hideInitially}) => hideInitially ? "hidden" : ""};
     &:hover {
         background-color: #ef9273;
+    }
+
+    @media screen and (max-width: 800px) {
+        visibility: ${({mobile}) => mobile ? mobile : ""};
     }
 `
 
@@ -233,28 +238,38 @@ export const Member = styled.div `
     display:table-cell;
 `
 
-
-
 export const Group = styled.div `
     margin: auto;
     padding: 20px;
     border-width: 2px;
     margin-bottom: 5px;
+    width: 300px;
     background-color: #5bccf6;
     visibility: ${({hide}) => hide ? 'hidden' : ''};
     border-style: solid;
     border-radius: 1rem;
 `
 
-export const GroupName = styled.label `
-    font-size: 1.5rem;
+export const GroupCont = styled.div `
+    display: flex;
+    flex-wrap: wrap;
+    min-width: 700px;
+    @media screen and (max-width: 960px) {
+        flex-wrap: nowrap;
+        min-width: 0px;
+        flex-direction: column;
+    }
 `
 
 export const StudentCont = styled.div `
     display: flex;
     flex-wrap: wrap;
     margin: auto;
-    max-width: 600px;
+    width: 300px;
+`
+
+export const GroupName = styled.label `
+    font-size: 1.5rem;
 `
 
 export const Change = styled.a `

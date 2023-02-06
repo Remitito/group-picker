@@ -1,13 +1,13 @@
 import {Main, Info, TextBox, Button, Column, Name, OptionTitle, NumGroups, GroupName, Notice,
   Row, Student, Gender, GenderCont, GroupButton, ToAvoidLogo, Title, ChangeLogo, ToAvoid, ChangeCont, OptionLabel, Change, Member, GenderLogo,
-  StudentCont, OptionRow, AvoidStudent, AvoidCont, InfoSection, Group} from './styles'
+  StudentCont, OptionRow, AvoidStudent, AvoidCont, InfoSection, Group, GroupCont} from './styles'
 import React from "react";
 import html2canvas from 'html2canvas';
 import {changeGroupFunc, makeGroupsByGenderMemFunc, makeGroupsFunc, makeGroupsByGenderFunc} from './GroupHandling.js';
 import './fonts.css';
 import './index.css'
 import jsPDF from 'jspdf';
-
+// ["Bruce", "m", []], ["Steve", "m", []], ["Ryan", "m", []], ["Sally", "f", []], ["Polly", "f", []], ["Rick", "m", []]
 
 class App extends React.Component {
   constructor() {
@@ -304,10 +304,13 @@ class App extends React.Component {
         <Title className='openSans'>Group Picker</Title>
         {this.state.step === 1 ?
         <Row>
-          <TextBox placeholder="Enter names here" name="students" value={this.state.students} onChange={this.handleChange}/>
+          <Column>
+            <TextBox placeholder="Enter names here" name="students" value={this.state.students} onChange={this.handleChange}/>
+            <Button mobile="visible" hideInitially className='openSans' onClick={this.addStudents}>Confirm</Button>
+          </Column>
           <Column>
             <Info className='openSans'><InfoSection selected={this.state.errorCode === "unique" ? true : false}>No repeated names</InfoSection><p></p> One name per line</Info>
-            <Button className='openSans' onClick={this.addStudents}>Confirm</Button>
+            <Button mobile="hidden" className='openSans' onClick={this.addStudents}>Confirm</Button>
           </Column>
         </Row>
         :
@@ -370,8 +373,12 @@ class App extends React.Component {
               <div style={{"backgroundColor": "#fcde67"}} id="groupCont">
               {this.state.groups[0].length === 0 ? <div style={{marginBottom: "20px"}}>
                 <Notice error className='openSans'>You need to add some names first!</Notice>
-                </div> : <>
-              {this.mapGroups()}</>
+                </div> : 
+                <>
+              <GroupCont>
+                {this.mapGroups()}
+              </GroupCont>
+              </>
             }
               </div>
               <div style={{'display': 'flex', 'flexDirection': 'row'}}>
