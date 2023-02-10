@@ -31,7 +31,7 @@ const changeGroupFunc = (direction, student, groupNum, groups) => {
     return groupsCopy
   }
 
-
+// according to required number of groups
 const makeGroupsByGenderFunc = (numGroups, studentInfo) => {
     // Add group arrays
     let output = []
@@ -144,7 +144,7 @@ const makeGroupsFunc = (numGroups, studentInfo, perGroup) => {
     }
   }
   else {
-   // Assign groups for number per group
+   // Assign groups for members per group
     while (names.length > 0) {
       let newGroup = []
       for (let i = 0; i < numGroups; i++) {
@@ -154,6 +154,11 @@ const makeGroupsFunc = (numGroups, studentInfo, perGroup) => {
         }
       }
       output.push(newGroup)
+    }
+    // if last group only has one student alone, add them to the last group
+    if(output.at(-1).length === 1) {
+      let lastGroup = output.pop()
+      output.at(-1).push(lastGroup[0])
     }
   }
   return output

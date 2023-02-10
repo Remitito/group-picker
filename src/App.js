@@ -9,6 +9,8 @@ import './index.css'
 import jsPDF from 'jspdf';
 // ["Bruce", "m", []], ["Steve", "m", []], ["Ryan", "m", []], ["Sally", "f", []], ["Polly", "f", []], ["Rick", "m", []]
 
+// Check by group members function (if there are leftover students they should be added to make a bigger group, not put on their own)
+
 class App extends React.Component {
   constructor() {
     super()
@@ -108,7 +110,8 @@ class App extends React.Component {
       this.setState({step: 2})
       return
     }
-    let studentNames = this.state.students.split(/\r?\n/)
+    let removeEmptyLines = this.state.students.replace(/^(?=\n)$|^\s*|\s*$|\n\n+/gm,"")
+    let studentNames = removeEmptyLines.split(/\r?\n/)
     if(studentNames.length !== new Set(studentNames).size) {
       this.setState({error: "Please ensure all names are different", errorCode: "unique"})
       return
@@ -232,7 +235,16 @@ class App extends React.Component {
   changeGroup = (direction, student, groupNum) => {
     let newGroups = changeGroupFunc(direction, student, groupNum, this.state.groups)
     this.setState({groups: newGroups, student1: ["", 0], errorCode: ""})
-  } 
+  }
+
+  goBack = () => {
+    if(window.confirm("This will delete the current groups. Are you sure?")) {
+      this.setState({step: 2, errorCode: ""})
+    }
+    else {
+      return
+    }
+  }
 
   
   mapStudents = () => { 
@@ -272,8 +284,8 @@ class App extends React.Component {
               <ChangeCont>
                 <Change value={student} onClick={() => this.switchStudents(student, groupNum)}>
                   <ChangeLogo src={require('./images//change.png')} background={student === this.state.student1[0]}/></Change>
-                <Change value={student} onClick={() => this.changeGroup("up", student, groupNum)}><ChangeLogo src={require('./images//upArrow.png')}/></Change>
-                <Change value={student} onClick={() => this.changeGroup("down", student, groupNum)}><ChangeLogo src={require('./images//downArrow.png')}/></Change>
+                <Change value={student} onClick={() => this.changeGroup("down", student, groupNum)}><ChangeLogo src={require('./images//upArrow.png')}/></Change>
+                <Change value={student} onClick={() => this.changeGroup("up", student, groupNum)}><ChangeLogo src={require('./images//downArrow.png')}/></Change>
               </ChangeCont>
             </Member>
             )}
@@ -382,7 +394,7 @@ class App extends React.Component {
             }
               </div>
               <div style={{'display': 'flex', 'flexDirection': 'row'}}>
-                <Button className='openSans' onClick={() => this.setState({step: 2, errorCode: ""})}>Back</Button>
+                <Button className='openSans' onClick={() => this.goBack()}>Back</Button>
                 <Button className='openSans' onClick={() => this.doCapture()}>Save as PDF</Button>
               </div>
             </>
