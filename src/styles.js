@@ -17,7 +17,9 @@ export const Info = styled.div `
 `
 
 export const InfoSection = styled.label `
-    background-color: ${({selected}) => selected ? '#fcde67' : '#5bccf6'};
+    background-color: ${({selected}) => selected ? 'red' : '#5bccf6'};
+    color: ${({selected}) => selected ? 'white' : 'black'};
+    font-weight: ${({selected}) => selected ? 'bolder' : ''};
     padding: 10px;
     border-radius: 1rem;
 
@@ -48,6 +50,13 @@ export const Notice = styled.label `
     color: ${({error}) => error ? 'white' : ''};
     font-size: 1rem;
     border-radius: 2rem;
+    padding: 10px;
+`
+
+export const AvoidNotice = styled.label `
+    text-align: center;
+    font-size: 1.6rem;
+    margin-top: 50px;
     padding: 10px;
 `
 
@@ -159,11 +168,15 @@ export const TextBox = styled.textarea `
 
 export const Title = styled.h1 `
     margin-bottom: 20px;
+    margin-left: ${({moveToRight}) => moveToRight ? '90px' : ''};
 `
 
 export const Button = styled.button `
     width: 40%;
     margin-top: 10px;
+    border: solid;
+    border-width: 2px;
+    font-weight: bolder;
     margin: auto;
     background-color: #5bccf6;
     font-size: ${({size}) => size ? size : '1.5rem'};
@@ -179,6 +192,22 @@ export const Button = styled.button `
     }
 `
 
+export const MainButton = styled.button `    
+    width: 70%;
+    font-size: 1.5rem;
+    border-radius: 1rem;
+    margin-top: 10px;
+    color: white;
+    font-weight: bolder;
+    background-color: green;
+    border-radius: 2rem;
+    &:hover {
+        background-color: #ef9273;
+    }
+
+
+`
+
 
 export const Row = styled.div `
     display: flex;
@@ -191,7 +220,11 @@ export const Row = styled.div `
 export const GroupButton = styled.button `
     height: 70%;
     width: 70%;
+    border: solid;
+    border-width: 2px;
+    font-weight: bolder;
     border-radius: 1rem;
+    margin-top: 10px;
     background-color: #5bccf6;
     border-radius: 2rem;
     &:hover {
@@ -213,12 +246,12 @@ export const OptionTitle = styled.h4 `
 export const OptionRow = styled.div `
     display: flex;
     flex-direction: row;
+    margin-left: 30px;
     height: 80px;
 `
 
 export const Column = styled.div `
     display: flex;
-    min-height: 300px;
     flex-direction: column;
     width: 45%;
 `

@@ -1,6 +1,6 @@
 import {Main, Info, TextBox, Button, Column, Name, OptionTitle, NumGroups, GroupName, Notice,
-  Row, Student, Gender, GenderCont, GroupButton, ToAvoidLogo, Title, ChangeLogo, ToAvoid, ChangeCont, OptionLabel, Change, Member, GenderLogo,
-  StudentCont, OptionRow, AvoidStudent, AvoidCont, InfoSection, Group, GroupCont} from './styles'
+  Row, Student, Gender, GenderCont, GroupButton, ToAvoidLogo, Title, AvoidNotice, ChangeLogo, ToAvoid, ChangeCont, OptionLabel, Change, Member, GenderLogo,
+  StudentCont, OptionRow, AvoidStudent, MainButton, AvoidCont, InfoSection, Group, GroupCont} from './styles'
 import React from "react";
 import html2canvas from 'html2canvas';
 import {changeGroupFunc, makeGroupsByGenderMemFunc, makeGroupsFunc, makeGroupsByGenderFunc} from './GroupHandling.js';
@@ -16,12 +16,12 @@ class App extends React.Component {
     super()
     this.state = {
       students: "",
-      nameArray: ["Jack", "Jane", "Sarah", "Frank", "Keith", "Rachel", "Melvin"],
-      studentInfo: [["Jack", "m", [""]], ["Jane", "f", []], ["Sarah", "f", [""]], ["Frank", "m", []], ["Keith", "m", []], ["Rachel", "f", []], ["Melvin", "m", []]],
-      step: 2,
-      groups: [["Melvin", "Jane", "Sarah", "Frank"], ["Rachel", "Keith", "Jack"]],
+      nameArray: ["Jack", "Jane", "Sarah", "Frank", "Keith", "Rachel", "Melvin", "Ryan"],
+      studentInfo: [["Sarah", "f", [""]], ["Keith", "m", []], ["Sally", "f", []], ["Ryan", "m", []], ["Steve", "m", []], ["Melvin", "m", []], ["Rachel", "f", []], ["Jane", "f", []]],
+      step: 3,
+      groups: [["Sally", "Jane", "Bruce"], ["Ryan", "Rachel"], ["Steve", "Sarah"], ["Melvin", "Keith"]],
       byGender: false,
-      numGroups: 2,
+      numGroups: 4,
       student1: ["", 0],
       error: "",
       errorCode: "",
@@ -222,6 +222,7 @@ class App extends React.Component {
   }
 
   changeGender = (key, gender) => {
+    console.log(this.state.studentInfo)
     let studentInfoCopy = this.state.studentInfo
     if(studentInfoCopy[key][1] !== gender) {
       studentInfoCopy[key][1] = gender
@@ -230,6 +231,13 @@ class App extends React.Component {
       studentInfoCopy[key][1] = ""
     }
     this.setState({studentInfo: studentInfoCopy, errorCode: ""})
+  }
+
+  deleteGroupMember = (groupNum, student) => {
+    let groupsCopy = this.state.groups
+    let studentPos = groupsCopy[groupNum].indexOf(student)
+    groupsCopy[groupNum].splice(studentPos, 1)
+    this.setState({groups: groupsCopy})
   }
 
   changeGroup = (direction, student, groupNum) => {
@@ -284,8 +292,9 @@ class App extends React.Component {
               <ChangeCont>
                 <Change value={student} onClick={() => this.switchStudents(student, groupNum)}>
                   <ChangeLogo src={require('./images//change.png')} background={student === this.state.student1[0]}/></Change>
-                <Change value={student} onClick={() => this.changeGroup("down", student, groupNum)}><ChangeLogo src={require('./images//upArrow.png')}/></Change>
-                <Change value={student} onClick={() => this.changeGroup("up", student, groupNum)}><ChangeLogo src={require('./images//downArrow.png')}/></Change>
+                <Change value={student} onClick={() => this.changeGroup("up", student, groupNum)}><ChangeLogo src={require('./images//upArrow.png')}/></Change>
+                <Change value={student} onClick={() => this.changeGroup("down", student, groupNum)}><ChangeLogo src={require('./images//downArrow.png')}/></Change>
+                <Change onClick={() => this.deleteGroupMember(groupNum, student)}><ChangeLogo style={{height: "30px", padding: "0px"}} src={require('./images//trash.png')}/></Change>
               </ChangeCont>
             </Member>
             )}
@@ -313,7 +322,7 @@ class App extends React.Component {
   return (
     <div style={{margin: "auto", maxWidth: "500px", marginTop: "50px"}}>
       <Main>
-        <Title className='openSans'>Group Picker</Title>
+        <Title moveToRight className='openSans'>Group Picker</Title>
         {this.state.step === 1 ?
         <Row>
           <Column>
@@ -334,14 +343,13 @@ class App extends React.Component {
               <Row bottom="5px">
                 <Button size="1rem" onClick={() => {this.clear()}}>Clear</Button>
                 <Button size="1rem" onClick={() => {this.setState({step: 1})}}>Add Names</Button>
-                <Button size="1rem" className='openSans' onClick={this.state.byGender === true ? () => this.makeGroupsByGender() : () => this.makeGroups()}>Make Groups</Button>
               </Row>
               {this.mapStudents()}
               <Row style={{marginLeft: "5%"}}>{this.state.nameArray.length === 0 ? <Notice style={{margin: "auto", fontSize: "0.9rem", marginBottom: "5px"}} error>Add names to get started</Notice> : <></>}</Row>
               </Column>
               <Column>
               {this.state.errorCode !== "gender" ?
-                <Notice className='openSans'>Press the hand icon to choose which people you would prefer not to be put in the same group as a particular person</Notice>
+                <AvoidNotice className='openSans'>To separate certain students, press the <a style={{fontWeight: 'bolder', color: "green"}}>hand icon.</a></AvoidNotice>
               :
                 <Notice error className='openSans'>{this.state.error}</Notice>
               }
@@ -374,6 +382,9 @@ class App extends React.Component {
                     </OptionRow>
               </>
                 }
+                    <OptionRow>
+                      <MainButton size="1.2rem" className='openSans' onClick={this.state.byGender === true ? () => this.makeGroupsByGender() : () => this.makeGroups()}>Make Groups</MainButton>
+                    </OptionRow>
               </>
               </Column>
             </Row>
@@ -393,7 +404,7 @@ class App extends React.Component {
               </>
             }
               </div>
-              <div style={{'display': 'flex', 'flexDirection': 'row'}}>
+              <div style={{display: 'flex', flexDirection: 'row', marginLeft: "100px", marginTop: "10px"}}>
                 <Button className='openSans' onClick={() => this.goBack()}>Back</Button>
                 <Button className='openSans' onClick={() => this.doCapture()}>Save as PDF</Button>
               </div>
