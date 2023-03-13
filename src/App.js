@@ -18,7 +18,7 @@ class App extends React.Component {
       students: "",
       nameArray: ["Jack", "Jane", "Sarah", "Frank", "Keith", "Rachel", "Melvin", "Ryan"],
       studentInfo: [["Sarah", "f", [""]], ["Keith", "m", []], ["Sally", "f", []], ["Ryan", "m", []], ["Steve", "m", []], ["Melvin", "m", []], ["Rachel", "f", []], ["Jane", "f", []]],
-      step: 3,
+      step: 2,
       groups: [["Sally", "Jane", "Bruce"], ["Ryan", "Rachel"], ["Steve", "Sarah"], ["Melvin", "Keith"]],
       byGender: false,
       numGroups: 4,
