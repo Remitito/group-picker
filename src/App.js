@@ -9,8 +9,6 @@ import './index.css'
 import jsPDF from 'jspdf';
 // ["Bruce", "m", []], ["Steve", "m", []], ["Ryan", "m", []], ["Sally", "f", []], ["Polly", "f", []], ["Rick", "m", []]
 
-// Check by group members function (if there are leftover students they should be added to make a bigger group, not put on their own)
-
 class App extends React.Component {
   constructor() {
     super()
