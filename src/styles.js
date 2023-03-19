@@ -173,7 +173,7 @@ export const Title = styled.h1 `
 
 export const Button = styled.button `
     width: 40%;
-    margin-top: 10px;
+    margin-top: ${({noMargin}) => noMargin ? '' : '10px'};;
     border: solid;
     border-width: 2px;
     font-weight: bolder;

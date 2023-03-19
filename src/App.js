@@ -3,7 +3,7 @@ import {Main, Info, TextBox, Button, Column, Name, OptionTitle, NumGroups, Group
   StudentCont, OptionRow, AvoidStudent, MainButton, AvoidCont, InfoSection, Group, GroupCont} from './styles'
 import React from "react";
 import html2canvas from 'html2canvas';
-import {changeGroupFunc, makeGroupsByGenderMemFunc, makeGroupsFunc, makeGroupsByGenderFunc} from './GroupHandling.js';
+import {changeGroupFunc, makeGroupsFunc, makeGroupsByGenderFunc} from './GroupHandling.js';
 import './fonts.css';
 import './index.css'
 import jsPDF from 'jspdf';
@@ -15,9 +15,11 @@ class App extends React.Component {
     this.state = {
       students: "",
       nameArray: ["Jack", "Jane", "Sarah", "Frank", "Keith", "Rachel", "Melvin", "Ryan"],
-      studentInfo: [["Sarah", "f", [""]], ["Keith", "m", []], ["Sally", "f", []], ["Ryan", "m", []], ["Steve", "m", []], ["Melvin", "m", []], ["Rachel", "f", []], ["Jane", "f", []]],
+      studentInfo: [["Sarah", "f", []], ["Keith", "m", []], ["Sally", "f", []], ["Ryan", "m", []], ["Steve", "m", []], ["Melvin", "m", []], ["Rachel", "f", []], 
+      ["Jane", "f", []], ["Bruce", "m", []], ["Steve", "m", []], ["Bob", "m", []], ["Sandra", "f", []], ["Polly", "f", []], ["Rick", "m", []]],
       step: 2,
-      groups: [["Sally", "Jane", "Bruce"], ["Ryan", "Rachel"], ["Steve", "Sarah"], ["Melvin", "Keith"]],
+      // groups: [["Sally", "Jane", "Bruce"], ["Ryan", "Rachel"], ["Steve", "Sarah"], ["Melvin", "Keith"]],
+      groups: [],
       byGender: false,
       numGroups: 4,
       student1: ["", 0],
@@ -164,13 +166,13 @@ class App extends React.Component {
   }
 
   makeGroups = () => {
-    console.log(this.state.groups)
     let output = []
     if(this.state.chooseByNumGroups) { 
-      output = makeGroupsFunc(this.state.numGroups, this.state.studentInfo, false)
+      output = makeGroupsFunc(this.state.numGroups, this.state.studentInfo)
     }
     else {
-      output = makeGroupsFunc(this.state.numGroups, this.state.studentInfo, true)
+      let numberOfGroups = Math.round(this.state.studentInfo.length / this.state.numGroups)
+      output = makeGroupsFunc(numberOfGroups, this.state.studentInfo)    
     }
     while (!this.checkGroups(output)) {
       this.makeGroups()
@@ -192,7 +194,8 @@ class App extends React.Component {
         output = makeGroupsByGenderFunc(this.state.numGroups, this.state.studentInfo)
       }
       else {
-        output = makeGroupsByGenderMemFunc(this.state.numGroups, this.state.studentInfo)
+        let numberOfGroups = Math.round(this.state.studentInfo.length / this.state.numGroups)
+        output = makeGroupsByGenderFunc(numberOfGroups, this.state.studentInfo)
       }
         while (!this.checkGroups(output)) {
         this.makeGroupsByGender()
@@ -220,7 +223,6 @@ class App extends React.Component {
   }
 
   changeGender = (key, gender) => {
-    console.log(this.state.studentInfo)
     let studentInfoCopy = this.state.studentInfo
     if(studentInfoCopy[key][1] !== gender) {
       studentInfoCopy[key][1] = gender
@@ -329,7 +331,10 @@ class App extends React.Component {
           </Column>
           <Column>
             <Info className='openSans'><InfoSection selected={this.state.errorCode === "unique" ? true : false}>No repeated names</InfoSection><p></p> One name per line</Info>
-            <Button mobile="hidden" className='openSans' onClick={this.addStudents}>Confirm</Button>
+            <Row>
+              <Button mobile="hidden" className='openSans' onClick={this.addStudents}>Confirm</Button>
+              <Button mobile="visible" className='openSans' onClick={() => this.setState({step: 2})}>Go Back</Button>
+            </Row>
           </Column>
         </Row>
         :
