@@ -14,9 +14,9 @@ class App extends React.Component {
     super()
     this.state = {
       students: "",
-      nameArray: ["Jack", "Jane", "Sarah", "Frank", "Keith", "Rachel", "Melvin", "Ryan"],
-      studentInfo: [["Sarah", "f", []], ["Keith", "m", []], ["Sally", "f", []], ["Ryan", "m", []], ["Steve", "m", []], ["Melvin", "m", []], ["Rachel", "f", []], 
-      ["Jane", "f", []], ["Bruce", "m", []], ["Steve", "m", []], ["Bob", "m", []], ["Sandra", "f", []], ["Polly", "f", []], ["Rick", "m", []]],
+      nameArray: ["Sarah", "Keith", "Sally", "Ryan", "Melvin", "Rachel", "Jane", "Bruce", "Steve", "Bob", "Sandra", "Polly", "Rick", "Frank"],
+      studentInfo: [["Sarah", "f", []], ["Keith", "m", ["Frank", "Bruce"]], ["Sally", "f", ["Rick", "Polly"]], ["Ryan", "m", []], ["Melvin", "m", ["Jane", "Ryan"]], ["Rachel", "f", []], 
+      ["Jane", "f", []], ["Bruce", "m", []], ["Steve", "m", []], ["Bob", "m", []], ["Sandra", "f", []], ["Polly", "f", []], ["Rick", "m", []], ["Frank", "m", []]],
       step: 2,
       // groups: [["Sally", "Jane", "Bruce"], ["Ryan", "Rachel"], ["Steve", "Sarah"], ["Melvin", "Keith"]],
       groups: [],
@@ -27,7 +27,8 @@ class App extends React.Component {
       errorCode: "",
       currentStudent: "", 
       toAvoid: [],
-      chooseByNumGroups: true
+      chooseByNumGroups: true,
+      groupsValid: false
     }
   }
 
@@ -133,24 +134,6 @@ class App extends React.Component {
     }
   }
 
-  checkGroups = (groupList) => { // check group members arent on avoid list
-    groupList.forEach((group, groupNum) => {
-      group.forEach((member) => {
-        for(let i = 0; i < this.state.studentInfo.length; i++) {
-          if(this.state.studentInfo[i][0] === member) {
-            let avoidList = this.state.studentInfo[i][2]
-            for(let e = 0; e < group.length; e++) {
-              if(avoidList.includes(group[e])) {
-                return false
-              }
-            }
-          }
-        }
-      })
-    })
-    return true
-  }
-
   removeStudent = (studentToRemove) => {
     let newStudentInfo = this.state.studentInfo
     let newStudents = this.state.students
@@ -174,9 +157,6 @@ class App extends React.Component {
       let numberOfGroups = Math.round(this.state.studentInfo.length / this.state.numGroups)
       output = makeGroupsFunc(numberOfGroups, this.state.studentInfo)    
     }
-    while (!this.checkGroups(output)) {
-      this.makeGroups()
-    }
     this.setState({groups: output, step: 3, errorCode: ""})
   }
 
@@ -196,9 +176,6 @@ class App extends React.Component {
       else {
         let numberOfGroups = Math.round(this.state.studentInfo.length / this.state.numGroups)
         output = makeGroupsByGenderFunc(numberOfGroups, this.state.studentInfo)
-      }
-        while (!this.checkGroups(output)) {
-        this.makeGroupsByGender()
       }
       this.setState({groups: output, step: 3, errorCode: ""})
     }
