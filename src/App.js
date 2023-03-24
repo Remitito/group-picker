@@ -9,14 +9,17 @@ import './index.css'
 import jsPDF from 'jspdf';
 // ["Bruce", "m", []], ["Steve", "m", []], ["Ryan", "m", []], ["Sally", "f", []], ["Polly", "f", []], ["Rick", "m", []]
 
+// current issue: 1 student still left in array at the end 
+// ["Keith", "Sally", "Ryan", "Melvin", "Rachel", "Jane", "Bruce", "Steve"]
+
 class App extends React.Component {
   constructor() {
     super()
     this.state = {
       students: "",
-      nameArray: ["Sarah", "Keith", "Sally", "Ryan", "Melvin", "Rachel", "Jane", "Bruce", "Steve", "Bob", "Sandra", "Polly", "Rick", "Frank"],
-      studentInfo: [["Sarah", "f", []], ["Keith", "m", ["Frank", "Bruce"]], ["Sally", "f", ["Rick", "Polly"]], ["Ryan", "m", []], ["Melvin", "m", ["Jane", "Ryan"]], ["Rachel", "f", []], 
-      ["Jane", "f", []], ["Bruce", "m", []], ["Steve", "m", []], ["Bob", "m", []], ["Sandra", "f", []], ["Polly", "f", []], ["Rick", "m", []], ["Frank", "m", []]],
+      nameArray: ["Sarah", "Keith", "Sally", "Ryan", "Melvin", "Rachel", "Jane", "Bruce", "Steve"],
+      studentInfo: [["Sarah", "f", []], ["Keith", "m", []], ["Sally", "f", []], ["Ryan", "m", []], 
+      ["Melvin", "m", []], ["Rachel", "f", []], ["Jane", "f", []], ["Bruce", "m", []], ["Steve", "m", []]],
       step: 2,
       // groups: [["Sally", "Jane", "Bruce"], ["Ryan", "Rachel"], ["Steve", "Sarah"], ["Melvin", "Keith"]],
       groups: [],
@@ -31,7 +34,6 @@ class App extends React.Component {
       groupsValid: false
     }
   }
-
 
   handleChange = (e) => {
     let name = e.target.name
@@ -66,10 +68,10 @@ class App extends React.Component {
 
   addToAvoid = (name) => { // add to current avoid list
     let toAvoidCopy = this.state.toAvoid
-    if(toAvoidCopy.includes(name)) {
+    if(toAvoidCopy.includes(name)) { // remove name from list
       toAvoidCopy.splice(toAvoidCopy.indexOf(name), 1)
     }
-    else {
+    else { // add name to list
       toAvoidCopy.push(name)
     }
     this.setState({toAvoid: toAvoidCopy, errorCode: ""})
@@ -79,12 +81,21 @@ class App extends React.Component {
     let studentInfoCopy = this.state.studentInfo
     studentInfoCopy.forEach((student, index) => {
       if(student[0] === this.state.currentStudent) {
-        studentInfoCopy[index][2] = []
+        studentInfoCopy[index][2] = [] // reset avoid list as easier to push all names (although less efficient)
         this.state.toAvoid.forEach(name => {
           studentInfoCopy[index][2].push(name)
         })
       }
     })
+    // add to other student's avoid list too
+    studentInfoCopy.forEach((student, index) => {
+      this.state.toAvoid.forEach((otherName, i) => {
+        if(student[0] === otherName) {
+          student[2].push(this.state.currentStudent)
+        }
+      })
+    })
+    
     this.setState({studentInfo: studentInfoCopy, step: 2, errorCode: ""})
   } 
 
@@ -149,15 +160,21 @@ class App extends React.Component {
   }
 
   makeGroups = () => {
+    console.log("Make groups called")
     let output = []
     if(this.state.chooseByNumGroups) { 
       output = makeGroupsFunc(this.state.numGroups, this.state.studentInfo)
     }
     else {
       let numberOfGroups = Math.round(this.state.studentInfo.length / this.state.numGroups)
-      output = makeGroupsFunc(numberOfGroups, this.state.studentInfo)    
+      output = makeGroupsFunc(numberOfGroups, this.state.studentInfo)
     }
-    this.setState({groups: output, step: 3, errorCode: ""})
+    if(output === false) {
+      this.setState({error: "Groups could not be made. Please edit avoid lists or try again", errorCode: "gender"})
+    }
+    else {
+      this.setState({groups: output, step: 3, errorCode: ""})
+    }
   }
 
   makeGroupsByGender = () => {
@@ -265,13 +282,13 @@ class App extends React.Component {
         <GroupName className='nerko'>Group {groupNum + 1}</GroupName>
           <StudentCont>
             {group.map((student) => 
-            <Member className='openSans'>{student}
+            <Member className='openSans'>{student[0]}
               <ChangeCont>
-                <Change value={student} onClick={() => this.switchStudents(student, groupNum)}>
-                  <ChangeLogo src={require('./images//change.png')} background={student === this.state.student1[0]}/></Change>
-                <Change value={student} onClick={() => this.changeGroup("up", student, groupNum)}><ChangeLogo src={require('./images//upArrow.png')}/></Change>
-                <Change value={student} onClick={() => this.changeGroup("down", student, groupNum)}><ChangeLogo src={require('./images//downArrow.png')}/></Change>
-                <Change onClick={() => this.deleteGroupMember(groupNum, student)}><ChangeLogo style={{height: "30px", padding: "0px"}} src={require('./images//trash.png')}/></Change>
+                <Change value={student[0]} onClick={() => this.switchStudents(student[0], groupNum)}>
+                  <ChangeLogo src={require('./images//change.png')} background={student[0] === this.state.student1[0]}/></Change>
+                <Change value={student[0]} onClick={() => this.changeGroup("up", student[0], groupNum)}><ChangeLogo src={require('./images//upArrow.png')}/></Change>
+                <Change value={student[0]} onClick={() => this.changeGroup("down", student[0], groupNum)}><ChangeLogo src={require('./images//downArrow.png')}/></Change>
+                <Change onClick={() => this.deleteGroupMember(groupNum, student[0])}><ChangeLogo style={{height: "30px", padding: "0px"}} src={require('./images//trash.png')}/></Change>
               </ChangeCont>
             </Member>
             )}

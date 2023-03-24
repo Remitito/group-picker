@@ -43,10 +43,10 @@ const makeGroupsByGenderFunc = (numGroups, studentInfo) => {
     let female = []
     studentInfo.forEach(student => {
       if(student[1] === "m") {
-        male.push(student[0])
+        male.push(student)
       }
       else {
-        female.push(student[0])
+        female.push(student)
       }
     })
     let maleShuffled = randomize(male)
@@ -55,35 +55,93 @@ const makeGroupsByGenderFunc = (numGroups, studentInfo) => {
     while (maleShuffled.length > 0 || femaleShuffled.length > 0) {
       output.forEach(group => {
         if(maleShuffled.length > 0) {
-          group.push(maleShuffled.pop())
+          if(checkValidity(maleShuffled[maleShuffled.length - 1][2], group)) {
+            group.push(maleShuffled.pop())
+          }
         }
-        else if (femaleShuffled.length > 0) {group.push(femaleShuffled.pop())}
+        else if (femaleShuffled.length > 0) {
+          if(checkValidity(femaleShuffled[femaleShuffled.length - 1][2], group)) {
+            group.push(femaleShuffled.pop())
+          }
+        }
       })
     }
     return output
   }
 
 
-const makeGroupsFunc = (numGroups, studentInfo) => {
-  let output = []
-  // Get names
-  let names = []
-  randomize(studentInfo).forEach(student => {
-      names.push(student[0])
-  })
-  // Add group arrays
-    for (let i = 0; i < numGroups; i++) {
-      output.push([])
-    }
-    while (names.length > 0) {
-      for (let i = 0; i < numGroups; i++) {
-          if(names.length > 0) {
-            let name = names.pop()
-            output[i].push(name)
+  const checkValidity = (student, group) => {
+    let valid = true
+    student[2].forEach(name => {
+      if(valid) {
+        group.forEach(member => {
+          if(name === member[0]) {
+            valid = false
           }
+        })
       }
+    })
+    return valid
+  }
+
+const checkGroupsEven = (groups) => {
+  let biggest = 0
+  let smallest = groups[0].length
+  groups.forEach(group => {
+    if(group.length > biggest) {biggest = group.length}
+    else if(group.length < smallest) {smallest = group.length}
+  })
+  if(Math.abs(biggest - smallest) > 1) {
+    return false
+  }
+  return true
+}
+
+
+const addMembers = (students, numGroups, output) => {
+  let go = students.length // only allow a certain amount of iterations 
+  while (students.length > 0 && go < students.length * 25) {
+    for (let i = 0; i < numGroups; i++) {
+        if(students.length > 0) {
+          go += 1
+          if(checkValidity(students[students.length - 1], output[i])) {
+            let student = students.pop() 
+            output[i].push(student)
+          }
+        }
     }
+  }
+  // if a student couldn't be assigned or groups are uneven
+  if(students.length > 0 || !checkGroupsEven(output)) {
+    return false
+  }
   return output
 }
+
+const makeGroupsFunc = (numGroups, studentInfo) => {
+  let students = [...studentInfo]
+  let output = []
+  randomize(students)
+  // Add group arrays
+  for (let i = 0; i < numGroups; i++) {
+    output.push([])
+  }
+  // repeat 1000 times to try and complete assignment
+  let counter = 0
+  while (counter < 500) {
+    randomize(students)
+    if(!addMembers(students, numGroups, output)) {
+      addMembers(students, numGroups, output)
+      counter += 1
+    }
+    else {
+      return output
+    }
+  }
+  // try once more
+  return false
+}
+
+
 
 export {changeGroupFunc, makeGroupsFunc, makeGroupsByGenderFunc};
