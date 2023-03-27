@@ -9,7 +9,6 @@ import './index.css'
 import jsPDF from 'jspdf';
 // ["Bruce", "m", []], ["Steve", "m", []], ["Ryan", "m", []], ["Sally", "f", []], ["Polly", "f", []], ["Rick", "m", []]
 
-// current issue: 1 student still left in array at the end 
 // ["Keith", "Sally", "Ryan", "Melvin", "Rachel", "Jane", "Bruce", "Steve"]
 
 class App extends React.Component {
@@ -228,10 +227,12 @@ class App extends React.Component {
   }
 
   deleteGroupMember = (groupNum, student) => {
-    let groupsCopy = this.state.groups
-    let studentPos = groupsCopy[groupNum].indexOf(student)
-    groupsCopy[groupNum].splice(studentPos, 1)
-    this.setState({groups: groupsCopy})
+    if(window.confirm(`Are you sure you want to delete ${student}?`)) {
+      let groupsCopy = this.state.groups
+      let studentPos = groupsCopy[groupNum].indexOf(student)
+      groupsCopy[groupNum].splice(studentPos, 1)
+      this.setState({groups: groupsCopy})
+    }
   }
 
   changeGroup = (direction, student, groupNum) => {

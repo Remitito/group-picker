@@ -39,34 +39,61 @@ const makeGroupsByGenderFunc = (numGroups, studentInfo) => {
       output.push([])
     }
     // Split male/female
-    let male = []
-    let female = []
+    let males = []
+    let females = []
     studentInfo.forEach(student => {
       if(student[1] === "m") {
-        male.push(student)
+        males.push(student)
       }
       else {
-        female.push(student)
+        females.push(student)
       }
     })
-    let maleShuffled = randomize(male)
-    let femaleShuffled = randomize(female)
-    // Assign groups
-    while (maleShuffled.length > 0 || femaleShuffled.length > 0) {
-      output.forEach(group => {
-        if(maleShuffled.length > 0) {
-          if(checkValidity(maleShuffled[maleShuffled.length - 1][2], group)) {
-            group.push(maleShuffled.pop())
-          }
-        }
-        else if (femaleShuffled.length > 0) {
-          if(checkValidity(femaleShuffled[femaleShuffled.length - 1][2], group)) {
-            group.push(femaleShuffled.pop())
-          }
-        }
+    // repeat 1000 times to try and complete assignment
+    let counter = 0
+    while (counter < 500) {
+      // mix names up but keep them separated by gender
+      let students = []
+      randomize(males).forEach(male => {
+        students.push(male)
       })
+      randomize(females).forEach(female => {
+        students.push(female)
+      })
+      if(!addMembers(students, numGroups, output)) {
+        addMembers(students, numGroups, output)
+        counter += 1
+      }
+      else {
+        return output
+      }
     }
-    return output
+    // try once more
+    return false
+  }
+
+  const makeGroupsFunc = (numGroups, studentInfo) => {
+    let students = [...studentInfo]
+    let output = []
+    randomize(students)
+    // Add group arrays
+    for (let i = 0; i < numGroups; i++) {
+      output.push([])
+    }
+    // repeat 1000 times to try and complete assignment
+    let counter = 0
+    while (counter < 500) {
+      randomize(students)
+      if(!addMembers(students, numGroups, output)) {
+        addMembers(students, numGroups, output)
+        counter += 1
+      }
+      else {
+        return output
+      }
+    }
+    // try once more
+    return false
   }
 
 
@@ -100,6 +127,9 @@ const checkGroupsEven = (groups) => {
 
 const addMembers = (students, numGroups, output) => {
   let go = students.length // only allow a certain amount of iterations 
+  students.forEach(name => {
+    console.log(name)
+  })
   while (students.length > 0 && go < students.length * 25) {
     for (let i = 0; i < numGroups; i++) {
         if(students.length > 0) {
@@ -117,31 +147,6 @@ const addMembers = (students, numGroups, output) => {
   }
   return output
 }
-
-const makeGroupsFunc = (numGroups, studentInfo) => {
-  let students = [...studentInfo]
-  let output = []
-  randomize(students)
-  // Add group arrays
-  for (let i = 0; i < numGroups; i++) {
-    output.push([])
-  }
-  // repeat 1000 times to try and complete assignment
-  let counter = 0
-  while (counter < 500) {
-    randomize(students)
-    if(!addMembers(students, numGroups, output)) {
-      addMembers(students, numGroups, output)
-      counter += 1
-    }
-    else {
-      return output
-    }
-  }
-  // try once more
-  return false
-}
-
 
 
 export {changeGroupFunc, makeGroupsFunc, makeGroupsByGenderFunc};
