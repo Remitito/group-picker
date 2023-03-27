@@ -9,6 +9,8 @@ import './index.css'
 import jsPDF from 'jspdf';
 // ["Bruce", "m", []], ["Steve", "m", []], ["Ryan", "m", []], ["Sally", "f", []], ["Polly", "f", []], ["Rick", "m", []]
 
+// ENTERING A 0 VALUE ON GROUP PART COMPLETELY BREAKS IT
+
 // ["Keith", "Sally", "Ryan", "Melvin", "Rachel", "Jane", "Bruce", "Steve"]
 
 class App extends React.Component {
@@ -159,20 +161,24 @@ class App extends React.Component {
   }
 
   makeGroups = () => {
-    console.log("Make groups called")
-    let output = []
-    if(this.state.chooseByNumGroups) { 
-      output = makeGroupsFunc(this.state.numGroups, this.state.studentInfo)
+    if(this.state.numGroups == 0) {
+      this.setState({error: "Minimum number of groups/members per groups = 1", errorCode: "gender"})
     }
     else {
-      let numberOfGroups = Math.round(this.state.studentInfo.length / this.state.numGroups)
-      output = makeGroupsFunc(numberOfGroups, this.state.studentInfo)
-    }
-    if(output === false) {
-      this.setState({error: "Groups could not be made. Please edit avoid lists or try again", errorCode: "gender"})
-    }
-    else {
-      this.setState({groups: output, step: 3, errorCode: ""})
+      let output = []
+      if(this.state.chooseByNumGroups) { 
+        output = makeGroupsFunc(this.state.numGroups, this.state.studentInfo)
+      }
+      else {
+        let numberOfGroups = Math.round(this.state.studentInfo.length / this.state.numGroups)
+        output = makeGroupsFunc(numberOfGroups, this.state.studentInfo)
+      }
+      if(output === false) {
+        this.setState({error: "Groups could not be made. Please edit avoid lists or try again", errorCode: "gender"})
+      }
+      else {
+        this.setState({groups: output, step: 3, errorCode: ""})
+      }
     }
   }
 
@@ -184,6 +190,10 @@ class App extends React.Component {
         success = false
       }
     })
+    if(this.state.numGroups == 0) {
+      this.setState({error: "Minimum number of groups/members per groups = 1", errorCode: "gender"})
+      success = false
+    }
     if(success) {
       let output = []
       if(this.state.chooseByNumGroups) {
@@ -343,7 +353,7 @@ class App extends React.Component {
                 <Button size="1.3rem" onClick={() => {this.setState({step: 1})}}>Add Names</Button>
               </Row>
               {this.mapStudents()}
-              <Row style={{marginLeft: "5%"}}>{this.state.nameArray.length === 0 ? <Notice style={{margin: "auto", fontSize: "0.9rem", marginBottom: "5px"}} error>Add names to get started</Notice> : <></>}</Row>
+              <Row style={{marginLeft: "5%"}}>{this.state.nameArray.length === 0 ? <Notice style={{margin: "auto", marginTop: "5px", fontSize: "1.5rem", marginBottom: "5px"}} error>Please add names</Notice> : <></>}</Row>
               </Column>
               <Column>
               {this.state.errorCode !== "gender" ?

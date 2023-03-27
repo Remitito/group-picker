@@ -53,16 +53,14 @@ export const Notice = styled.label `
     max-width: 80%;
     background-color: ${({error}) => error ? 'red' : '#5bccf6'};
     color: ${({error}) => error ? 'white' : ''};
-    font-size: 1rem;
+    font-size: 1.3rem;
     border-radius: 2rem;
-    padding: 10px;
 `
 
 export const AvoidNotice = styled.label `
     text-align: center;
     font-size: 1.6rem;
-    margin-top: 50px;
-    padding: 10px;
+    margin-bottom: 20px;
 `
 
 export const ToAvoid = styled.a `
@@ -167,8 +165,9 @@ export const Name = styled.label `
 
 
 export const TextBox = styled.textarea `
-    min-height: 300px;
+    min-height: 400px;
     resize: vertical;
+    font-size: 1.2rem;
     width: 300px;
     border-radius: 0.5rem;
 `
