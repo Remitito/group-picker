@@ -315,9 +315,9 @@ class App extends React.Component {
   render() {
   
   return (
-    <div style={{margin: "auto", maxWidth: "500px", marginTop: "50px"}}>
+    <div style={{textAlign: 'center', marginTop: "60px"}}>
+      <Title moveToRight className='openSans'>Group Picker</Title>
       <Main>
-        <Title moveToRight className='openSans'>Group Picker</Title>
         {this.state.step === 1 ?
         <Row>
           <Column>
@@ -339,8 +339,8 @@ class App extends React.Component {
             <Row>
               <Column>
               <Row bottom="5px">
-                <Button size="1rem" onClick={() => {this.clear()}}>Clear</Button>
-                <Button size="1rem" onClick={() => {this.setState({step: 1})}}>Add Names</Button>
+                <Button size="1.3rem" onClick={() => {this.clear()}}>Clear</Button>
+                <Button size="1.3rem" onClick={() => {this.setState({step: 1})}}>Add Names</Button>
               </Row>
               {this.mapStudents()}
               <Row style={{marginLeft: "5%"}}>{this.state.nameArray.length === 0 ? <Notice style={{margin: "auto", fontSize: "0.9rem", marginBottom: "5px"}} error>Add names to get started</Notice> : <></>}</Row>

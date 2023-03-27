@@ -2,9 +2,14 @@ import styled from 'styled-components'
 
 export const Main = styled.div `
     display: flex;
-    width: 600px;
+    width: 800px;
     flex-direction: column;
     text-align: center;
+    color: black;
+    margin: auto;
+    margin-top: 30px;
+    padding: 50px;
+
 `
 
 export const Info = styled.div `
@@ -155,6 +160,8 @@ export const Gender = styled.a `
 `
 export const Name = styled.label `
     width: 40%;
+    font-size: 1.3rem;
+    margin: auto;
     font-weight: bolder;
 `
 
@@ -167,8 +174,27 @@ export const TextBox = styled.textarea `
 `
 
 export const Title = styled.h1 `
-    margin-bottom: 20px;
-    margin-left: ${({moveToRight}) => moveToRight ? '90px' : ''};
+    font-size: 50px;
+    font-weight: 500;
+    color: black;
+    border-right: 4px solid black;
+    animation: cursor 1s infinite step-end, typing 15s infinite steps(16);
+    white-space: nowrap;
+    overflow: hidden;
+    margin: auto;
+
+    @keyframes cursor{
+        0%, 100%{border-color: black;}
+        50%{border-color: black;}
+    }
+
+    @keyframes typing{
+        0%{ width: 0ch} /*Text is hidden*/
+        30%{ width: 16ch;} /*The enitre header will be typed out*/
+        80%{ width: 16ch;} /*Text stays visible*/
+        90%{ width: 0ch;} /*Text is deleted*/
+        100%{ width: 0ch;} /*Text stays hidden*/
+    }
 `
 
 export const Button = styled.button `
@@ -218,9 +244,10 @@ export const Row = styled.div `
 `
 
 export const GroupButton = styled.button `
-    height: 70%;
+    height: 80%;
     width: 70%;
     border: solid;
+    font-size: 1.2rem;
     border-width: 2px;
     font-weight: bolder;
     border-radius: 1rem;
@@ -239,7 +266,7 @@ export const NumGroups = styled.input `
     text-align: center;
 `
 
-export const OptionTitle = styled.h4 `
+export const OptionTitle = styled.h3 `
     width: 40%;
 `
 
