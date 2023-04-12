@@ -57,6 +57,12 @@ export const Notice = styled.label `
     border-radius: 2rem;
 `
 
+export const MemberCount = styled.label `
+    font-size: 1.3rem;
+    margin: auto;
+    margin-top: 10px;
+`
+
 export const AvoidNotice = styled.label `
     text-align: center;
     font-size: 1.6rem;

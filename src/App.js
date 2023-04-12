@@ -1,6 +1,6 @@
 import {Main, Info, TextBox, Button, Column, Name, OptionTitle, NumGroups, GroupName, Notice,
   Row, Student, Gender, GenderCont, GroupButton, ToAvoidLogo, Title, AvoidNotice, ChangeLogo, ToAvoid, ChangeCont, OptionLabel, Change, Member, GenderLogo,
-  StudentCont, OptionRow, AvoidStudent, MainButton, AvoidCont, InfoSection, Group, GroupCont} from './styles'
+  StudentCont, OptionRow, AvoidStudent, MemberCount, MainButton, AvoidCont, InfoSection, Group, GroupCont} from './styles'
 import React from "react";
 import html2canvas from 'html2canvas';
 import {changeGroupFunc, makeGroupsFunc, makeGroupsByGenderFunc} from './GroupHandling.js';
@@ -351,6 +351,9 @@ class App extends React.Component {
               <Row bottom="5px">
                 <Button size="1.3rem" onClick={() => {this.clear()}}>Clear</Button>
                 <Button size="1.3rem" onClick={() => {this.setState({step: 1})}}>Add Names</Button>
+              </Row>
+              <Row bottom="5px">
+                <MemberCount size="1.3rem" onClick={() => {this.clear()}}>Total Members: {this.state.studentInfo.length}</MemberCount>
               </Row>
               {this.mapStudents()}
               <Row style={{marginLeft: "5%"}}>{this.state.nameArray.length === 0 ? <Notice style={{margin: "auto", marginTop: "5px", fontSize: "1.5rem", marginBottom: "5px"}} error>Please add names</Notice> : <></>}</Row>
