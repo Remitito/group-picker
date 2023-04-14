@@ -7,7 +7,6 @@ export const Main = styled.div `
     text-align: center;
     color: black;
     margin: auto;
-    margin-top: 30px;
     padding: 50px;
 
 `
@@ -48,15 +47,6 @@ export const GenderCont = styled.div `
     flex-direction: row;
 `
 
-
-export const Notice = styled.label `
-    max-width: 80%;
-    background-color: ${({error}) => error ? 'red' : '#5bccf6'};
-    color: ${({error}) => error ? 'white' : ''};
-    font-size: 1.3rem;
-    border-radius: 2rem;
-`
-
 export const MemberCount = styled.label `
     font-size: 1.3rem;
     margin: auto;
@@ -67,6 +57,15 @@ export const AvoidNotice = styled.label `
     text-align: center;
     font-size: 1.6rem;
     margin-bottom: 20px;
+    margin-top: 60px;
+`
+export const Notice = styled.label `
+    max-width: 80%;
+    background-color: ${({error}) => error ? 'red' : '#5bccf6'};
+    color: ${({error}) => error ? 'white' : ''};
+    font-size: 1.3rem;
+    border-radius: 2rem;
+    margin-top: 50px;
 `
 
 export const ToAvoid = styled.a `
@@ -187,6 +186,7 @@ export const Title = styled.h1 `
     white-space: nowrap;
     overflow: hidden;
     margin: auto;
+    padding-top: 15px;
 
     @keyframes cursor{
         0%, 100%{border-color: black;}
@@ -217,10 +217,19 @@ export const Button = styled.button `
     &:hover {
         background-color: #ef9273;
     }
-
     @media screen and (max-width: 800px) {
         visibility: ${({mobile}) => mobile ? mobile : ""};
     }
+`
+
+export const StyledNavContainer = styled.div `
+    width: 100%;
+    height: 105px;
+    position: sticky;
+    top: 0;
+    z-index: 99;
+    background-color: #5bccf6;
+    border-bottom: solid 1px;
 `
 
 export const MainButton = styled.button `    
@@ -235,9 +244,9 @@ export const MainButton = styled.button `
     &:hover {
         background-color: #ef9273;
     }
-
-
 `
+
+
 
 
 export const Row = styled.div `
@@ -318,10 +327,12 @@ export const Group = styled.div `
 export const GroupCont = styled.div `
     display: flex;
     flex-wrap: wrap;
+    margin-right: 50px;
     min-width: 700px;
-    @media screen and (max-width: 960px) {
+    @media screen and (max-width: 700px) {
         flex-wrap: nowrap;
         min-width: 0px;
+        margin-right: 250px;
         flex-direction: column;
     }
 `

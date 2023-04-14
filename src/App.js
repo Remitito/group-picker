@@ -1,6 +1,6 @@
 import {Main, Info, TextBox, Button, Column, Name, OptionTitle, NumGroups, GroupName, Notice,
   Row, Student, Gender, GenderCont, GroupButton, ToAvoidLogo, Title, AvoidNotice, ChangeLogo, ToAvoid, ChangeCont, OptionLabel, Change, Member, GenderLogo,
-  StudentCont, OptionRow, AvoidStudent, MemberCount, MainButton, AvoidCont, InfoSection, Group, GroupCont} from './styles'
+  StudentCont, OptionRow, AvoidStudent, StyledNavContainer, MemberCount, MainButton, AvoidCont, InfoSection, Group, GroupCont} from './styles'
 import React from "react";
 import html2canvas from 'html2canvas';
 import {changeGroupFunc, makeGroupsFunc, makeGroupsByGenderFunc} from './GroupHandling.js';
@@ -47,24 +47,26 @@ class App extends React.Component {
   }
 
   doCapture = () => {
-    const input = document.getElementById("groupCont")
-    html2canvas(input, {logging: true, letterRendering: 1, useCORS: true}).then(canvas => {
-      const imgWidth = 200;
-      const imgHeight = canvas.height * imgWidth / canvas.width
-      const imgData = canvas.toDataURL('img/png')
-      let groupsString = "\n \n \n "
-      for(let i = 0; i < this.state.groups.length; i++) {
-        let currentString = "\n \n Group " + (i + 1) + ": "
-        for(let e = 0; e < this.state.groups[i].length; e++) {
-          currentString += this.state.groups[i][e] + " "
+    if(this.state.studentInfo.length > 0) { 
+      const input = document.getElementById("groupCont")
+      html2canvas(input, {logging: true, letterRendering: 1, useCORS: true}).then(canvas => {
+        const imgWidth = 200;
+        const imgHeight = canvas.height * imgWidth / canvas.width
+        const imgData = canvas.toDataURL('img/png')
+        let groupsString = "\n \n \n "
+        for(let i = 0; i < this.state.groups.length; i++) {
+          let currentString = "\n \n Group " + (i + 1) + ": "
+          for(let e = 0; e < this.state.groups[i].length; e++) {
+            currentString += this.state.groups[i][e] + " "
+          }
+          groupsString += currentString
         }
-        groupsString += currentString
-      }
-      const pdf = new jsPDF()
-      pdf.text(groupsString, 1, 1)
-      // pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight)
-      pdf.save('groups.pdf')
-    })
+        const pdf = new jsPDF()
+        pdf.text(groupsString, 1, 1)
+        // pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight)
+        pdf.save('groups.pdf')
+      })
+  }
   }
 
   addToAvoid = (name) => { // add to current avoid list
@@ -251,11 +253,16 @@ class App extends React.Component {
   }
 
   goBack = () => {
-    if(window.confirm("This will delete the current groups. Are you sure?")) {
-      this.setState({step: 2, errorCode: ""})
+    if(this.state.studentInfo.length > 0) {
+      if(window.confirm("This will delete the current groups. Are you sure?")) {
+        this.setState({step: 2, errorCode: ""})
+      }
+      else {
+        return
+      }
     }
     else {
-      return
+      this.setState({step: 2})
     }
   }
 
@@ -325,8 +332,10 @@ class App extends React.Component {
   render() {
   
   return (
-    <div style={{textAlign: 'center', marginTop: "60px"}}>
-      <Title moveToRight className='openSans'>Group Picker</Title>
+    <div>
+      <StyledNavContainer>
+        <Title className='openSans'>Group Picker</Title>
+      </StyledNavContainer>
       <Main>
         {this.state.step === 1 ?
         <Row>
@@ -356,7 +365,7 @@ class App extends React.Component {
                 <MemberCount size="1.3rem" onClick={() => {this.clear()}}>Total Members: {this.state.studentInfo.length}</MemberCount>
               </Row>
               {this.mapStudents()}
-              <Row style={{marginLeft: "5%"}}>{this.state.nameArray.length === 0 ? <Notice style={{margin: "auto", marginTop: "5px", fontSize: "1.5rem", marginBottom: "5px"}} error>Please add names</Notice> : <></>}</Row>
+              <Row style={{marginLeft: "5%"}}>{this.state.nameArray.length === 0 ? <Notice style={{margin: "auto", marginTop: "5px", fontSize: "1.5rem", padding: "10px", marginBottom: "5px"}} error>Please add names</Notice> : <></>}</Row>
               </Column>
               <Column>
               {this.state.errorCode !== "gender" ?
@@ -406,7 +415,7 @@ class App extends React.Component {
             <>
               <div style={{"backgroundColor": "#fcde67"}} id="groupCont">
               {this.state.groups[0].length === 0 ? <div style={{marginBottom: "20px"}}>
-                <Notice error className='openSans'>You need to add some names first!</Notice>
+                <Notice error className='openSans' style={{padding: "10px"}}>You need to add some names first!</Notice>
                 </div> : 
                 <>
               <GroupCont>
@@ -424,7 +433,7 @@ class App extends React.Component {
             <>
             {this.state.nameArray.length > 1 ?
               <label style={{marginBottom: "3%"}} className='openSans'>Choose people to be avoided by {this.state.currentStudent}:</label>
-              : <Notice error style={{margin: "auto"}} className='openSans'>{this.state.currentStudent} is the only member so there is nobody to avoid!</Notice>}
+              : <Notice error style={{margin: "auto", padding: "10px"}} className='openSans'>{this.state.currentStudent} is the only member so there is nobody to avoid!</Notice>}
               <AvoidCont>
               {this.mapStudentsToAvoid()}
               </AvoidCont>
