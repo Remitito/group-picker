@@ -182,7 +182,7 @@ export const Title = styled.h1 `
     font-weight: 500;
     color: black;
     border-right: 4px solid black;
-    animation: cursor 1s infinite step-end, typing 15s infinite steps(16);
+    animation: cursor infinite, typing 7s infinite steps(16);
     white-space: nowrap;
     overflow: hidden;
     margin: auto;
@@ -195,8 +195,8 @@ export const Title = styled.h1 `
 
     @keyframes typing{
         0%{ width: 0ch} /*Text is hidden*/
-        30%{ width: 16ch;} /*The enitre header will be typed out*/
-        80%{ width: 16ch;} /*Text stays visible*/
+        30%{ width: 11ch;} /*The enitre header will be typed out*/
+        80%{ width: 11ch;} /*Text stays visible*/
         90%{ width: 0ch;} /*Text is deleted*/
         100%{ width: 0ch;} /*Text stays hidden*/
     }
@@ -229,7 +229,7 @@ export const StyledNavContainer = styled.div `
     top: 0;
     z-index: 99;
     background-color: #5bccf6;
-    border-bottom: solid 1px;
+    border-bottom: solid 3px;
 `
 
 export const MainButton = styled.button `    

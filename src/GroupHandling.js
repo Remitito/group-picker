@@ -11,6 +11,7 @@ const randomize = (arr) => {
 
 const changeGroupFunc = (direction, student, groupNum, groups) => {
     let groupsCopy = groups
+    console.log(student)
     groupsCopy[groupNum].splice(groupsCopy[groupNum].indexOf(student), 1)
     if(direction === "down") {
       if(groupsCopy[groupNum + 1]) {
@@ -89,6 +90,7 @@ const makeGroupsByGenderFunc = (numGroups, studentInfo) => {
         counter += 1
       }
       else {
+        console.log(output[0][0])
         return output
       }
     }
@@ -128,7 +130,6 @@ const checkGroupsEven = (groups) => {
 const addMembers = (students, numGroups, output) => {
   let go = students.length // only allow a certain amount of iterations 
   students.forEach(name => {
-    console.log(name)
   })
   while (students.length > 0 && go < students.length * 25) {
     for (let i = 0; i < numGroups; i++) {

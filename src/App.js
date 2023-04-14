@@ -7,11 +7,11 @@ import {changeGroupFunc, makeGroupsFunc, makeGroupsByGenderFunc} from './GroupHa
 import './fonts.css';
 import './index.css'
 import jsPDF from 'jspdf';
-// ["Bruce", "m", []], ["Steve", "m", []], ["Ryan", "m", []], ["Sally", "f", []], ["Polly", "f", []], ["Rick", "m", []]
 
-// ENTERING A 0 VALUE ON GROUP PART COMPLETELY BREAKS IT
+// When moving students up and down it reduces their name to 1 letter
+// Still can't use switch feature at all 
 
-// ["Keith", "Sally", "Ryan", "Melvin", "Rachel", "Jane", "Bruce", "Steve"]
+
 
 class App extends React.Component {
   constructor() {
@@ -22,7 +22,6 @@ class App extends React.Component {
       studentInfo: [["Sarah", "f", []], ["Keith", "m", []], ["Sally", "f", []], ["Ryan", "m", []], 
       ["Melvin", "m", []], ["Rachel", "f", []], ["Jane", "f", []], ["Bruce", "m", []], ["Steve", "m", []]],
       step: 2,
-      // groups: [["Sally", "Jane", "Bruce"], ["Ryan", "Rachel"], ["Steve", "Sarah"], ["Melvin", "Keith"]],
       groups: [],
       byGender: false,
       numGroups: 4,
@@ -219,10 +218,20 @@ class App extends React.Component {
       const student2Name = name
       const student1Group = this.state.student1[1]
       const student2Group = groupNum
-      const student1Pos = groupsCopy[student1Group].indexOf(student1Name)
-      const student2Pos = groupsCopy[student2Group].indexOf(student2Name)
-      groupsCopy[student1Group][student1Pos] = student2Name
-      groupsCopy[student2Group][student2Pos] = student1Name
+      let student1Pos = 0
+      groupsCopy[student1Group].forEach((student, index) => {
+        if(student[0] === student1Name) {
+          student1Pos = index
+        }
+      })
+      let student2Pos = 0
+      groupsCopy[student2Group].forEach((student, index) => {
+        if(student[0] == student2Name) {
+          student2Pos = index
+        }
+      })
+      groupsCopy[student1Group][student1Pos] = [student2Name, student1Group]
+      groupsCopy[student2Group][student2Pos] = [student1Name, student2Group]
       this.setState({groups: groupsCopy, student1: ["", 0], errorCode: ""})
     }
   }
@@ -304,8 +313,8 @@ class App extends React.Component {
               <ChangeCont>
                 <Change value={student[0]} onClick={() => this.switchStudents(student[0], groupNum)}>
                   <ChangeLogo src={require('./images//change.png')} background={student[0] === this.state.student1[0]}/></Change>
-                <Change value={student[0]} onClick={() => this.changeGroup("up", student[0], groupNum)}><ChangeLogo src={require('./images//upArrow.png')}/></Change>
-                <Change value={student[0]} onClick={() => this.changeGroup("down", student[0], groupNum)}><ChangeLogo src={require('./images//downArrow.png')}/></Change>
+                <Change value={student[0]} onClick={() => this.changeGroup("up", student, groupNum)}><ChangeLogo src={require('./images//upArrow.png')}/></Change>
+                <Change value={student[0]} onClick={() => this.changeGroup("down", student, groupNum)}><ChangeLogo src={require('./images//downArrow.png')}/></Change>
                 <Change onClick={() => this.deleteGroupMember(groupNum, student[0])}><ChangeLogo style={{height: "30px", padding: "0px"}} src={require('./images//trash.png')}/></Change>
               </ChangeCont>
             </Member>
