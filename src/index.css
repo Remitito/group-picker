@@ -2,9 +2,8 @@
 
 body {
   background-image: url("../public/Manager.png");
-  background-size: 1850px;
+  background-size: 100%;
   background-attachment: fixed;
-  background-position: 25% 0%;
   background-repeat: no-repeat;
   color: #030e12;
   backdrop-filter: blur(8px);
