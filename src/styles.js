@@ -2,12 +2,21 @@ import styled from 'styled-components'
 
 export const Main = styled.div `
     display: flex;
+    filter: none;
     width: 800px;
+    background-color: #fcde67;
     flex-direction: column;
     text-align: center;
     color: black;
+    border: solid;
+    border-radius: 8rem;
+    
     margin: auto;
+    margin-top: 15px;
     padding: 50px;
+    @media screen and (max-width: 800px) {
+        width: 500px;
+    }
 
 `
 
@@ -56,11 +65,13 @@ export const MemberCount = styled.label `
 export const AvoidNotice = styled.label `
     text-align: center;
     font-size: 1.6rem;
+    padding: 5px;
     margin-bottom: 20px;
     margin-top: 60px;
 `
 export const Notice = styled.label `
     max-width: 80%;
+    padding: 5px;
     background-color: ${({error}) => error ? 'red' : '#5bccf6'};
     color: ${({error}) => error ? 'white' : ''};
     font-size: 1.3rem;
@@ -230,10 +241,12 @@ export const StyledNavContainer = styled.div `
     z-index: 99;
     background-color: #5bccf6;
     border-bottom: solid 3px;
+    margin-bottom: 30px;
 `
 
 export const MainButton = styled.button `    
     width: 70%;
+    height: 70%;
     font-size: 1.5rem;
     border-radius: 1rem;
     margin-top: 10px;
@@ -243,6 +256,10 @@ export const MainButton = styled.button `
     border-radius: 2rem;
     &:hover {
         background-color: #ef9273;
+    }
+    @media screen and (max-width: 800px) {
+        height: 85%;
+        width: 80%;
     }
 `
 
@@ -258,7 +275,7 @@ export const Row = styled.div `
 `
 
 export const GroupButton = styled.button `
-    height: 80%;
+    height: 70%;
     width: 70%;
     border: solid;
     font-size: 1.2rem;
@@ -271,6 +288,11 @@ export const GroupButton = styled.button `
     &:hover {
         background-color: #ef9273;
     }
+    @media screen and (max-width: 800px) {
+        height: 85%;
+        width: 80%;
+    }
+
 `
 
 export const NumGroups = styled.input `
@@ -288,7 +310,7 @@ export const OptionRow = styled.div `
     display: flex;
     flex-direction: row;
     margin-left: 30px;
-    height: 80px;
+    height: 120px;
 `
 
 export const Column = styled.div `

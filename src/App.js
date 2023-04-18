@@ -341,10 +341,8 @@ class App extends React.Component {
   render() {
   
   return (
-    <div>
-      <StyledNavContainer>
-        <Title className='openSans'>Group Picker</Title>
-      </StyledNavContainer>
+    <div className='main'>
+    <Title className='openSans'>Group Picker</Title>
       <Main>
         {this.state.step === 1 ?
         <Row>
