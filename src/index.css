@@ -1,11 +1,11 @@
 
 
 body {
-  background-image: url("../public/Manager.png");
+  /* background-image: url("../public/Manager.png"); */
   background-size: 100%;
   background-attachment: fixed;
   background-repeat: no-repeat;
-  color: #030e12;
+  background-color: #fcde67;
   backdrop-filter: blur(8px);
   margin: 0px;
   height: 100%;

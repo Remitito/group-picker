@@ -8,9 +8,6 @@ export const Main = styled.div `
     flex-direction: column;
     text-align: center;
     color: black;
-    border: solid;
-    border-radius: 8rem;
-    
     margin: auto;
     margin-top: 15px;
     padding: 50px;
@@ -197,6 +194,7 @@ export const Title = styled.h1 `
     white-space: nowrap;
     overflow: hidden;
     margin: auto;
+    margin-top: 20px;
     padding-top: 15px;
 
     @keyframes cursor{
