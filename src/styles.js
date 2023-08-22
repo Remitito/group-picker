@@ -203,11 +203,11 @@ export const Title = styled.h1 `
     }
 
     @keyframes typing{
-        0%{ width: 0ch} /*Text is hidden*/
-        30%{ width: 11ch;} /*The enitre header will be typed out*/
-        80%{ width: 11ch;} /*Text stays visible*/
-        90%{ width: 0ch;} /*Text is deleted*/
-        100%{ width: 0ch;} /*Text stays hidden*/
+        0%{ width: 0ch}
+        30%{ width: 11ch;} 
+        80%{ width: 11ch;} 
+        90%{ width: 0ch;} 
+        100%{ width: 0ch;} 
     }
 `
 
